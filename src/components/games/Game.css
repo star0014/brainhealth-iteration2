@@ -1,0 +1,55 @@
+.game-page { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; font-family: 'Inter', sans-serif; }
+
+.game-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+.game-back { background: none; border: 1.5px solid #e2e8f0; padding: 8px 16px; border-radius: 50px; font-size: 14px; font-weight: 500; color: #475569; cursor: pointer; transition: all 0.2s; }
+.game-back:hover { border-color: #2563eb; color: #2563eb; }
+.game-title-area { text-align: center; }
+.game-title-area h1 { font-size: 24px; font-weight: 700; color: #0d1b2a; margin-bottom: 4px; }
+.game-skill { font-size: 12px; color: #2563eb; font-weight: 600; background: #eff6ff; padding: 3px 10px; border-radius: 50px; }
+.game-rounds { font-size: 16px; font-weight: 600; color: #475569; background: #f1f5f9; padding: 8px 16px; border-radius: 50px; }
+
+.reaction-box { width: 100%; height: 380px; border-radius: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; user-select: none; }
+.reaction-box.waiting { background: #2563eb; }
+.reaction-box.ready { background: #dc2626; }
+.reaction-box.go { background: #16a34a; }
+.reaction-box.result { background: #2563eb; }
+.reaction-box.toosoon { background: #d97706; }
+
+.reaction-content { text-align: center; color: white; }
+.reaction-content p { font-size: 28px; font-weight: 700; margin: 16px 0 8px; }
+.reaction-content span { font-size: 15px; opacity: 0.85; }
+.reaction-go { font-size: 64px !important; font-weight: 800 !important; letter-spacing: -2px; }
+.reaction-time { font-size: 72px; font-weight: 800; letter-spacing: -3px; line-height: 1; }
+.reaction-time span { font-size: 24px; font-weight: 500; opacity: 0.8; }
+.reaction-dots { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
+.reaction-dots span { width: 12px; height: 12px; background: white; border-radius: 50%; animation: bounce 0.8s ease-in-out infinite; }
+.reaction-dots span:nth-child(2) { animation-delay: 0.15s; }
+.reaction-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+.reaction-results { background: white; border: 1px solid #e2e8f0; border-radius: 24px; padding: 40px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+.reaction-results h2 { font-size: 28px; font-weight: 700; color: #0d1b2a; margin-bottom: 28px; }
+.result-avg { margin-bottom: 28px; }
+.result-avg-num { font-size: 64px; font-weight: 800; color: #0d1b2a; letter-spacing: -3px; line-height: 1; }
+.result-avg-num span { font-size: 22px; font-weight: 500; color: #64748b; }
+.result-avg-label { font-size: 14px; color: #64748b; margin: 8px 0 6px; }
+.result-rating { font-size: 18px; font-weight: 700; }
+.result-rounds { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; text-align: left; background: #f8fafc; border-radius: 12px; padding: 16px 20px; }
+.result-round { display: flex; justify-content: space-between; font-size: 14px; color: #475569; font-weight: 500; }
+.result-actions { display: flex; gap: 12px; justify-content: center; }
+.game-back-btn { padding: 12px 28px; background: white; border: 1.5px solid #e2e8f0; border-radius: 50px; font-size: 15px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s; }
+.game-back-btn:hover { border-color: #2563eb; color: #2563eb; }
+.mg-play-btn { padding: 12px 28px; color: white; border: none; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+
+.memory-stats { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; font-size: 15px; color: #64748b; }
+.memory-stats strong { color: #0d1b2a; }
+.memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 440px; margin: 0 auto; }
+.memory-card { aspect-ratio: 1; cursor: pointer; perspective: 600px; }
+.memory-card-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.4s; border-radius: 12px; }
+.memory-card.flipped .memory-card-inner { transform: rotateY(180deg); }
+.memory-card-front, .memory-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.memory-card-front { background: #2563eb; color: white; font-size: 22px; font-weight: 700; border: 2px solid #1d4ed8; }
+.memory-card-back { background: white; border: 2px solid #e2e8f0; transform: rotateY(180deg); }
+.memory-card.matched .memory-card-back { background: #f0fdf4; border-color: #bbf7d0; }
+.result-saved { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 20px; text-align: center; }
+.result-desc { font-size: 14px; color: #64748b; margin-top: 6px; }
