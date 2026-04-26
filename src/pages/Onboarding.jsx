@@ -178,7 +178,15 @@ function Onboarding() {
 
   const nextStep = () => {
     if (!stepComplete) {
-      setShowValidation(true) // nudge the user to answer before proceeding
+      setShowValidation(true)
+      return
+    }
+    if (step === QUESTIONNAIRE_STEPS.length - 1) {
+      const payload = createDashboardPayload(calculateSnapshotFromResponses(responses), responses)
+      if (payload) {
+        localStorage.setItem('brainboostSnapshot', JSON.stringify(payload))
+        navigate('/dashboard', { state: payload })
+      }
       return
     }
     if (step < QUESTIONNAIRE_STEPS.length) {
@@ -222,6 +230,7 @@ function Onboarding() {
     if (!payload) return
 
     localStorage.setItem('brainboostSnapshot', JSON.stringify(payload))
+    navigate('/dashboard', { state: payload })
   }, [isResultStep, responses, scoring])
 
   return (

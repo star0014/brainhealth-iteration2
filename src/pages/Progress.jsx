@@ -6,10 +6,10 @@ import MilestoneBanner from '../components/MilestoneBanner'
 const API = 'http://localhost:3001/api'
 
 const MILESTONES = [
-  { days: 3,  label: '3-Day Starter',   desc: 'You showed up 3 days in a row!',       color: '#60a5fa' },
-  { days: 7,  label: '7-Day Streak',    desc: 'A full week of healthy habits!',        color: '#3b82f6' },
-  { days: 14, label: '2-Week Champion', desc: 'Two weeks of consistency!',             color: '#2563eb' },
-  { days: 30, label: '30-Day Legend',   desc: 'A whole month — you are unstoppable!',  color: '#1d4ed8' },
+  { days: 1,  label: 'First Check-in',  desc: 'You showed up — that is how it starts!', color: '#60a5fa' },
+  { days: 3,  label: '3-Day Starter',   desc: 'You showed up 3 days in a row!',          color: '#3b82f6' },
+  { days: 7,  label: '7-Day Streak',    desc: 'A full week of healthy habits!',           color: '#2563eb' },
+  { days: 30, label: '30-Day Legend',   desc: 'A whole month — you are unstoppable!',     color: '#1d4ed8' },
 ]
 
 function getRatingReaction(ms) {

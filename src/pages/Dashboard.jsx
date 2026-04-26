@@ -21,6 +21,14 @@ const DOMAIN_ICONS = {
   social_energy:    '🤝',
 }
 
+// Actionable tips for each domain risk area
+const DOMAIN_TIPS = {
+  sleep_rhythm:    '💡 Try going to bed 30 minutes earlier tonight — even small shifts help.',
+  move_mode:       '💡 Take a 10-minute walk after your next meal to boost your energy.',
+  screen_exposure: '💡 Put your phone face-down 1 hour before bed to improve sleep quality.',
+  social_energy:   '💡 Send one message to a friend today — connection starts small.',
+}
+
 // Reference average sleep hours for the 18-24 age group (used in the standout card)
 const SLEEP_AVERAGE_18_24 = { overall: 7.6, weeknight: 7.51, weekend: 7.59 }
 
@@ -83,7 +91,7 @@ const PET_STATES = {
     mouthType: 'yawn',
     animClass: 'pet-anim-slow',
     extras:    'zzz',
-    label:     '😴 Tired',
+    label:     'Tired',
     badgeClass:'badge-tired',
   },
   stressed: {
@@ -161,14 +169,14 @@ function getPetSpeech(snapshot) {
     return "Life is good! 😊 Your habits are really paying off — keep this going!"
   }
   if (overallScore >= 55) {
-    if (get('sleep_rhythm')     < 50) return "Yaaawn... running on low batteries today. 😴 My rest score is dragging me down..."
+    if (get('sleep_rhythm')     < 50) return "Yaaawn... running on low batteries today. My rest score is dragging me down..."
     if (get('cognitive_strain') < 50) return "My thoughts are all tangled up... 🌀 Too much going on. I need a mental break."
     if (get('social_energy')    < 50) return "Feeling a little isolated in here... 🥺 Could we connect with someone today?"
     return "Doing okay, but there's room to grow! 🤔 Which area should we focus on first?"
   }
   if (overallScore >= 38) {
     if (get('cognitive_strain') < 42) return "Everything feels overwhelming right now... 😰 Please help me slow down and breathe."
-    if (get('sleep_rhythm')     < 42) return "Can't... keep... eyes... open... 😴 I really, really need more sleep. Please."
+    if (get('sleep_rhythm')     < 42) return "Can't... keep... eyes... open... I really, really need more sleep. Please."
     return "I'm struggling a bit today... 😓 But I know we can turn this around together!"
   }
   return "I'm not feeling well at all... 😢 My scores are really suffering. Please take better care of me."
@@ -512,6 +520,7 @@ function Dashboard() {
   const baseSnapshot = location.state ?? parsedSnapshot
 
   const [dismissedWarnings, setDismissedWarnings] = useState([])  // keys of dismissed alert cards
+  const [expandedCard, setExpandedCard] = useState(null)  // which standout card is expanded
   const [showHistory,       setShowHistory]        = useState(false) // toggle for dismissed list
   const [isPoking,          setIsPoking]           = useState(false) // prevents rapid repeat pokes
   const [pokeMessage,       setPokeMessage]        = useState(null)  // temporary poke response text
@@ -655,6 +664,7 @@ function Dashboard() {
               <div className="toast-title">{priority.label}</div>
               <div className="toast-score">{priority.score}<span>/100</span></div>
               <div className="toast-desc">This is your main area to focus on right now.</div>
+              <div className="toast-tip">{DOMAIN_TIPS[priority.key] || '💡 Small daily changes add up over time.'}</div>
             </div>
             <button className="toast-dismiss" onClick={() => dismissWarning('priority')}>×</button>
           </div>
@@ -672,6 +682,7 @@ function Dashboard() {
               <div className="toast-title">{secondaryPriority.label}</div>
               <div className="toast-score">{secondaryPriority.score}<span>/100</span></div>
               <div className="toast-desc">Next best lever to work on after your top priority.</div>
+              <div className="toast-tip">{DOMAIN_TIPS[secondaryPriority.key] || '💡 Small daily changes add up over time.'}</div>
             </div>
             <button className="toast-dismiss" onClick={() => dismissWarning('secondary')}>×</button>
           </div>
@@ -700,43 +711,74 @@ function Dashboard() {
       <div className="section-heading">What stands out</div>
 
       <div className="standout-grid">
-        <div className="standout-card green" {...tilt}>
+        <div className="standout-card green" {...tilt} onClick={() => setExpandedCard(expandedCard === 'strongest' ? null : 'strongest')} style={{cursor:'pointer'}}>
           <img className="standout-img" src="https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=200&q=80" alt="strongest" />
-          <div className="standout-label">Strongest</div>
+          <div className="standout-label">Strongest {expandedCard === 'strongest' ? '▲' : '▼'}</div>
           <div className="standout-domain">{strongest.label}</div>
           <div className="standout-score">{strongest.score}/100</div>
           <div className="standout-bar-track">
             <div className="standout-bar-fill green" style={{ '--target-width': `${strongest.score}%` }}></div>
           </div>
+          {expandedCard === 'strongest' && (
+            <div className="standout-expanded">
+              <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Activity</span> <span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
+            </div>
+          )}
         </div>
-        <div className="standout-card red" {...tilt}>
+        <div className="standout-card red" {...tilt} onClick={() => setExpandedCard(expandedCard === 'focus' ? null : 'focus')} style={{cursor:'pointer'}}>
           <img className="standout-img" src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=200&q=80" alt="focus" />
-          <div className="standout-label">Focus here</div>
+          <div className="standout-label">Focus here {expandedCard === 'focus' ? '▲' : '▼'}</div>
           <div className="standout-domain">{priority.label}</div>
           <div className="standout-score">{priority.score}/100</div>
           <div className="standout-bar-track">
             <div className="standout-bar-fill red" style={{ '--target-width': `${priority.score}%` }}></div>
           </div>
+          {expandedCard === 'focus' && (
+            <div className="standout-expanded">
+              <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Activity</span> <span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
+            </div>
+          )}
         </div>
         {selectedSleepBand && (
-          <div className="standout-card blue" {...tilt}>
+          <div className="standout-card blue" {...tilt} onClick={() => setExpandedCard(expandedCard === 'sleep' ? null : 'sleep')} style={{cursor:'pointer'}}>
             <img className="standout-img" src="https://images.unsplash.com/photo-1586042091284-bd35c8c1d917?w=200&q=80" alt="sleep" />
-            <div className="standout-label">Your sleep</div>
+            <div className="standout-label">Your sleep {expandedCard === 'sleep' ? '▲' : '▼'}</div>
             <div className="standout-domain">{selectedSleepBand.midpoint}h avg</div>
             <div className="standout-score">Aus avg {SLEEP_AVERAGE_18_24.overall}h</div>
             <div className="standout-bar-track">
               <div className="standout-bar-fill blue" style={{ '--target-width': `${(selectedSleepBand.midpoint / 10) * 100}%` }}></div>
             </div>
+            {expandedCard === 'sleep' && (
+              <div className="standout-expanded">
+                <div className="standout-indicator"><span>Your sleep</span><span>{selectedSleepBand.midpoint}h</span></div>
+                <div className="standout-indicator"><span>Aus avg (18-24)</span><span> {SLEEP_AVERAGE_18_24.overall}h</span></div>
+                <div className="standout-indicator"><span>Sleep score</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+              </div>
+            )}
           </div>
         )}
-        <div className="standout-card amber" {...tilt}>
+        <div className="standout-card amber" {...tilt} onClick={() => setExpandedCard(expandedCard === 'overall' ? null : 'overall')} style={{cursor:'pointer'}}>
           <img className="standout-img" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&q=80" alt="overall" />
-          <div className="standout-label">Overall vibe</div>
+          <div className="standout-label">Overall vibe {expandedCard === 'overall' ? '▲' : '▼'}</div>
           <div className="standout-domain">{snapshot.overallScore}/100</div>
           <div className="standout-score">{snapshot.overallInterpretation}</div>
           <div className="standout-bar-track">
             <div className="standout-bar-fill amber" style={{ '--target-width': `${snapshot.overallScore}%` }}></div>
           </div>
+          {expandedCard === 'overall' && (
+            <div className="standout-expanded">
+              <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Activity</span> <span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+              <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
+            </div>
+          )}
         </div>
       </div>
 

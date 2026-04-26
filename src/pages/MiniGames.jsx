@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import ReactionGame from '../components/games/ReactionGame'
 import MemoryGame from '../components/games/MemoryGame'
+import StroopGame from '../components/games/StroopGame'
 import './MiniGames.css'
 
 function MiniGames() {
@@ -33,11 +34,27 @@ function MiniGames() {
           <path d="M8 21h8M12 17v4"/>
         </svg>
       )
+    },
+    {
+      id: 'stroop',
+      title: 'Stroop Test',
+      skill: 'Attention Control',
+      desc: 'Select the colour of the text — not what the word says. Trains your focus and cognitive control.',
+      duration: '~1 min',
+      color: '#f59e0b',
+      icon: (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      )
     }
   ]
 
   if (activeGame === 'reaction') return <ReactionGame onBack={() => setActiveGame(null)} />
   if (activeGame === 'memory') return <MemoryGame onBack={() => setActiveGame(null)} />
+  if (activeGame === 'stroop') return <StroopGame onBack={() => setActiveGame(null)} />
 
   return (
     <div className="mg-page">
@@ -73,9 +90,7 @@ function MiniGames() {
                 <h2>{g.title}</h2>
                 <span className="mg-duration">{g.duration}</span>
               </div>
-              <div className="mg-skill" style={{ color: g.color }}>
-                {g.skill}
-              </div>
+              <div className="mg-skill" style={{ color: g.color }}>{g.skill}</div>
               <p>{g.desc}</p>
               <button className="mg-play-btn" style={{ background: g.color }} onClick={() => setActiveGame(g.id)}>
                 Play Now

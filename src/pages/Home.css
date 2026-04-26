@@ -52,19 +52,9 @@
   padding: 24px 60px;
 }
 
-.home-logo {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1a1a2e;
-  letter-spacing: -0.5px;
-}
+.home-logo { font-size: 22px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.5px; }
 .home-logo span { color: #2563eb; }
-
-.home-nav-links {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+.home-nav-links { display: flex; gap: 10px; align-items: center; }
 
 .btn-ghost {
   padding: 10px 22px;
@@ -103,14 +93,8 @@
   padding: 60px 80px 40px;
 }
 
-.home-hero-left {
-  flex: 1;
-  max-width: 560px;
-}
-
-.home-hero-right {
-  flex: 0 0 auto;
-}
+.home-hero-left { flex: 1; max-width: 560px; }
+.home-hero-right { flex: 0 0 auto; }
 
 .home-badge {
   display: inline-flex;
@@ -123,8 +107,7 @@
   border-radius: 50px;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 28px;
 }
 
@@ -143,7 +126,7 @@
 
 .home-title {
   font-size: 54px;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.1;
   color: #0d1b2a;
   margin-bottom: 24px;
@@ -161,15 +144,11 @@
   font-size: 18px;
   color: #4a5568;
   line-height: 1.7;
-  margin-bottom: 40px;
-  max-width: 460px;
+  margin-bottom: 36px;
+  max-width: 480px;
 }
 
-.home-cta {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
+.home-cta { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
 
 .btn-hero {
   padding: 15px 34px;
@@ -178,7 +157,7 @@
   border: none;
   border-radius: 50px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.25s;
   box-shadow: 0 8px 30px rgba(37,99,235,0.35);
@@ -196,7 +175,18 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-.btn-hero-ghost:hover { border-color: #2563eb; background: rgba(37,99,235,0.04); }
+.btn-hero-ghost:hover { border-color: #2563eb; }
+
+.home-reassure { font-size: 13px; color: #94a3b8; margin: 0; }
+
+.brain-hero-img {
+  width: 460px;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(37,99,235,0.2);
+  animation: float1 6s ease-in-out infinite;
+}
 
 .home-tagline {
   position: relative;
@@ -215,6 +205,7 @@
   padding-left: 20px;
   text-align: left;
 }
+.home-tagline strong { color: #0d1b2a; }
 
 .home-stats {
   position: relative;
@@ -235,19 +226,9 @@
 .stat-card:nth-child(2) { border-left: none; border-right: none; }
 .stat-card:last-child { border-radius: 0 16px 16px 0; }
 
-.stat-num {
-  font-size: 32px;
-  font-weight: 700;
-  color: #0d1b2a;
-  letter-spacing: -1px;
-}
+.stat-num { font-size: 32px; font-weight: 700; color: #0d1b2a; letter-spacing: -1px; }
 .stat-num span { color: #2563eb; font-size: 18px; }
-.stat-label {
-  font-size: 12px;
-  color: #94a3b8;
-  margin-top: 4px;
-  font-weight: 500;
-}
+.stat-label { font-size: 12px; color: #94a3b8; margin-top: 4px; font-weight: 500; }
 
 .home-final-cta {
   position: relative;
@@ -260,19 +241,8 @@
   border: 1px solid rgba(37,99,235,0.1);
   margin-bottom: 60px;
 }
-.home-final-cta h2 {
-  font-size: 32px;
-  font-weight: 700;
-  color: #0d1b2a;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
-}
-.home-final-cta p {
-  font-size: 16px;
-  color: #64748b;
-  margin-bottom: 32px;
-  line-height: 1.6;
-}
+.home-final-cta h2 { font-size: 32px; font-weight: 700; color: #0d1b2a; margin-bottom: 12px; letter-spacing: -0.5px; }
+.home-final-cta p { font-size: 16px; color: #64748b; margin-bottom: 32px; line-height: 1.6; }
 
 .home-footer {
   position: relative;
@@ -284,41 +254,10 @@
   padding: 30px 60px;
   border-top: 1px solid rgba(37,99,235,0.1);
 }
-.home-footer p {
-  font-size: 12px;
-  color: #94a3b8;
-}
+.home-footer p { font-size: 12px; color: #94a3b8; }
 
-.hero-illustration {
-  width: 460px;
-  height: 460px;
-  object-fit: contain;
-  filter: drop-shadow(0 20px 40px rgba(37,99,235,0.15));
-  animation: float1 6s ease-in-out infinite;
-}
-
-.cta-illustration {
-  width: 200px;
-  height: 200px;
-  object-fit: contain;
-  margin-bottom: 20px;
-  opacity: 0.9;
-}
-
-.home-hero-right {
-  flex: 0 0 420px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.brain-visual {
+.brain-cartoon {
   width: 420px;
   height: 420px;
-}
-
-.brain-svg {
-  width: 100%;
-  height: 100%;
-  animation: float1 6s ease-in-out infinite;
+  animation: float1 4s ease-in-out infinite;
 }

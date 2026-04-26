@@ -10,7 +10,15 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo">Brain<span>Boost</span></div>
+      <div className="navbar-left">
+        <Link to="/" className="navbar-logo">Brain<span>Boost</span></Link>
+        <Link to="/" className="navbar-home-btn" title="Back to Home">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </Link>
+      </div>
       <div className="navbar-tabs">
         <Link to="/onboarding" className={`nav-tab ${location.pathname === '/onboarding' ? 'active' : ''}`}>Onboarding</Link>
         <Link to={canAccessProtectedPages ? '/dashboard' : '/onboarding'} className={`nav-tab ${location.pathname === '/dashboard' ? 'active' : ''}`}>Dashboard</Link>
