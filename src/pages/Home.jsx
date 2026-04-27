@@ -136,7 +136,6 @@ function Home() {
       {/* Footer */}
       <footer className="home-footer">
         <div className="home-logo">Brain<span>Boost</span></div>
-        <p>FIT5120 Team Tech N1nja · SDG 3 Good Health and Well-being</p>
       </footer>
     </div>
   )
