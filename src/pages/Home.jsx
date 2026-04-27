@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { getOrCreateGuestId } from "../utils/guestAuth"
 import "./Home.css"
 
-const DOMAINS = [
-  { icon: "🌙", label: "Sleep Rhythm",    desc: "How your rest patterns shape daily energy and focus.",           color: "#1a6fa8", bg: "#e0f0ff" },
-  { icon: "⚡", label: "Move Mode",        desc: "How movement habits build resilience and mental clarity.",        color: "#1a7a5e", bg: "#dcf5ec" },
-  { icon: "🧠", label: "Cognitive Strain", desc: "How screen time and mental load affect your concentration.",      color: "#b45309", bg: "#fef3c7" },
-  { icon: "🤝", label: "Social Energy",   desc: "How social connections fuel or drain your overall wellbeing.",    color: "#6b2fa0", bg: "#f3e8ff" },
-]
+
 
 function Home() {
   const navigate = useNavigate()
