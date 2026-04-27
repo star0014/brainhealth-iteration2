@@ -128,7 +128,7 @@ function Home() {
             </SignUpButton>
           </SignedOut>
           <SignedIn>
-            <button className="btn-main btn-main-lg" onClick={handleGoToApp}>Start my snapshot →</button>
+            <button className="btn-main btn-main-lg" onClick={handleGoToApp}>Get Started!</button>
           </SignedIn>
         </div>
       </section>
