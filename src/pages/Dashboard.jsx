@@ -646,139 +646,144 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* ── Biggest shifts ──────────────────────────────────────────────────── */}
-      <div className="section-heading">Biggest shifts</div>
+      {/* ── Biggest shifts + What stands out (side by side) ────────────────── */}
+      <div className="shifts-standout-row">
 
-      <div className="toast-stack">
-        {!dismissedWarnings.includes('priority') && (
-          <div className={`toast-card toast-${statusTone(priority.score)}`} {...tilt}>
-            <div className="toast-left">
-              <div className="toast-icon-wrap">
-                <span className="toast-emoji">{DOMAIN_ICONS[priority.key]}</span>
-                <span className="toast-pulse"></span>
+        <div className="shifts-col">
+          <div className="section-heading">Biggest shifts</div>
+          <div className="toast-stack">
+            {!dismissedWarnings.includes('priority') && (
+              <div className={`toast-card toast-${statusTone(priority.score)}`} {...tilt}>
+                <div className="toast-left">
+                  <div className="toast-icon-wrap">
+                    <span className="toast-emoji">{DOMAIN_ICONS[priority.key]}</span>
+                    <span className="toast-pulse"></span>
+                  </div>
+                </div>
+                <div className="toast-body">
+                  <div className="toast-tag">⚠ Priority 1</div>
+                  <div className="toast-title">{priority.label}</div>
+                  <div className="toast-score">{priority.score}<span>/100</span></div>
+                  <div className="toast-desc">This is your main area to focus on right now.</div>
+                  <div className="toast-tip">{DOMAIN_TIPS[priority.key] || '💡 Small daily changes add up over time.'}</div>
+                </div>
+                <button className="toast-dismiss" onClick={() => dismissWarning('priority')}>×</button>
               </div>
-            </div>
-            <div className="toast-body">
-              <div className="toast-tag">⚠ Priority 1</div>
-              <div className="toast-title">{priority.label}</div>
-              <div className="toast-score">{priority.score}<span>/100</span></div>
-              <div className="toast-desc">This is your main area to focus on right now.</div>
-              <div className="toast-tip">{DOMAIN_TIPS[priority.key] || '💡 Small daily changes add up over time.'}</div>
-            </div>
-            <button className="toast-dismiss" onClick={() => dismissWarning('priority')}>×</button>
-          </div>
-        )}
-        {!dismissedWarnings.includes('secondary') && (
-          <div className={`toast-card toast-${statusTone(secondaryPriority.score)}`} {...tilt}>
-            <div className="toast-left">
-              <div className="toast-icon-wrap">
-                <span className="toast-emoji">{DOMAIN_ICONS[secondaryPriority.key]}</span>
-                <span className="toast-pulse"></span>
-              </div>
-            </div>
-            <div className="toast-body">
-              <div className="toast-tag">↑ Priority 2</div>
-              <div className="toast-title">{secondaryPriority.label}</div>
-              <div className="toast-score">{secondaryPriority.score}<span>/100</span></div>
-              <div className="toast-desc">Next best lever to work on after your top priority.</div>
-              <div className="toast-tip">{DOMAIN_TIPS[secondaryPriority.key] || '💡 Small daily changes add up over time.'}</div>
-            </div>
-            <button className="toast-dismiss" onClick={() => dismissWarning('secondary')}>×</button>
-          </div>
-        )}
-      </div>
-
-      {dismissedWarnings.length > 0 && (
-        <div className="dismissed-section">
-          <button className="dismissed-toggle" onClick={() => setShowHistory(!showHistory)}>
-            {showHistory ? 'Hide' : 'Show'} dismissed ({dismissedWarnings.length})
-          </button>
-          {showHistory && (
-            <div className="dismissed-list">
-              {dismissedWarnings.includes('priority') && (
-                <div className="dismissed-item">{priority.label} — main priority</div>
-              )}
-              {dismissedWarnings.includes('secondary') && (
-                <div className="dismissed-item">{secondaryPriority.label} — next to watch</div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── What stands out ─────────────────────────────────────────────────── */}
-      <div className="section-heading">What stands out</div>
-
-      <div className="standout-grid">
-        <div className="standout-card green" {...tilt} onClick={() => setExpandedCard(expandedCard === 'strongest' ? null : 'strongest')} style={{cursor:'pointer'}}>
-          <img className="standout-img" src="https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=200&q=80" alt="strongest" />
-          <div className="standout-label">Strongest {expandedCard === 'strongest' ? '▲' : '▼'}</div>
-          <div className="standout-domain">{strongest.label}</div>
-          <div className="standout-score">{strongest.score}/100</div>
-          <div className="standout-bar-track">
-            <div className="standout-bar-fill green" style={{ '--target-width': `${strongest.score}%` }}></div>
-          </div>
-          {expandedCard === 'strongest' && (
-            <div className="standout-expanded">
-              <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Activity</span> <span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
-            </div>
-          )}
-        </div>
-        <div className="standout-card red" {...tilt} onClick={() => setExpandedCard(expandedCard === 'focus' ? null : 'focus')} style={{cursor:'pointer'}}>
-          <img className="standout-img" src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=200&q=80" alt="focus" />
-          <div className="standout-label">Focus here {expandedCard === 'focus' ? '▲' : '▼'}</div>
-          <div className="standout-domain">{priority.label}</div>
-          <div className="standout-score">{priority.score}/100</div>
-          <div className="standout-bar-track">
-            <div className="standout-bar-fill red" style={{ '--target-width': `${priority.score}%` }}></div>
-          </div>
-          {expandedCard === 'focus' && (
-            <div className="standout-expanded">
-              <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Activity</span> <span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
-            </div>
-          )}
-        </div>
-        {selectedSleepBand && (
-          <div className="standout-card blue" {...tilt} onClick={() => setExpandedCard(expandedCard === 'sleep' ? null : 'sleep')} style={{cursor:'pointer'}}>
-            <img className="standout-img" src="https://images.unsplash.com/photo-1586042091284-bd35c8c1d917?w=200&q=80" alt="sleep" />
-            <div className="standout-label">Your sleep {expandedCard === 'sleep' ? '▲' : '▼'}</div>
-            <div className="standout-domain">{selectedSleepBand.midpoint}h avg</div>
-            <div className="standout-score">Aus avg {SLEEP_AVERAGE_18_24.overall}h</div>
-            <div className="standout-bar-track">
-              <div className="standout-bar-fill blue" style={{ '--target-width': `${(selectedSleepBand.midpoint / 10) * 100}%` }}></div>
-            </div>
-            {expandedCard === 'sleep' && (
-              <div className="standout-expanded">
-                <div className="standout-indicator"><span>Your sleep</span><span>{selectedSleepBand.midpoint}h</span></div>
-                <div className="standout-indicator"><span>Aus avg (18-24)</span><span> {SLEEP_AVERAGE_18_24.overall}h</span></div>
-                <div className="standout-indicator"><span>Sleep score</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+            )}
+            {!dismissedWarnings.includes('secondary') && (
+              <div className={`toast-card toast-${statusTone(secondaryPriority.score)}`} {...tilt}>
+                <div className="toast-left">
+                  <div className="toast-icon-wrap">
+                    <span className="toast-emoji">{DOMAIN_ICONS[secondaryPriority.key]}</span>
+                    <span className="toast-pulse"></span>
+                  </div>
+                </div>
+                <div className="toast-body">
+                  <div className="toast-tag">↑ Priority 2</div>
+                  <div className="toast-title">{secondaryPriority.label}</div>
+                  <div className="toast-score">{secondaryPriority.score}<span>/100</span></div>
+                  <div className="toast-desc">Next best lever to work on after your top priority.</div>
+                  <div className="toast-tip">{DOMAIN_TIPS[secondaryPriority.key] || '💡 Small daily changes add up over time.'}</div>
+                </div>
+                <button className="toast-dismiss" onClick={() => dismissWarning('secondary')}>×</button>
               </div>
             )}
           </div>
-        )}
-        <div className="standout-card amber" {...tilt} onClick={() => setExpandedCard(expandedCard === 'overall' ? null : 'overall')} style={{cursor:'pointer'}}>
-          <img className="standout-img" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&q=80" alt="overall" />
-          <div className="standout-label">Overall vibe {expandedCard === 'overall' ? '▲' : '▼'}</div>
-          <div className="standout-domain">{snapshot.overallScore}/100</div>
-          <div className="standout-score">{snapshot.overallInterpretation}</div>
-          <div className="standout-bar-track">
-            <div className="standout-bar-fill amber" style={{ '--target-width': `${snapshot.overallScore}%` }}></div>
-          </div>
-          {expandedCard === 'overall' && (
-            <div className="standout-expanded">
-              <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Activity</span> <span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
-              <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
+
+          {dismissedWarnings.length > 0 && (
+            <div className="dismissed-section">
+              <button className="dismissed-toggle" onClick={() => setShowHistory(!showHistory)}>
+                {showHistory ? 'Hide' : 'Show'} dismissed ({dismissedWarnings.length})
+              </button>
+              {showHistory && (
+                <div className="dismissed-list">
+                  {dismissedWarnings.includes('priority') && (
+                    <div className="dismissed-item">{priority.label} — main priority</div>
+                  )}
+                  {dismissedWarnings.includes('secondary') && (
+                    <div className="dismissed-item">{secondaryPriority.label} — next to watch</div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
+
+        <div className="standout-col">
+          <div className="section-heading">What stands out</div>
+          <div className="standout-grid">
+            <div className="standout-card green" {...tilt} onClick={() => setExpandedCard(expandedCard === 'strongest' ? null : 'strongest')} style={{cursor:'pointer'}}>
+              <img className="standout-img" src="https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=200&q=80" alt="strongest" />
+              <div className="standout-label">Strongest {expandedCard === 'strongest' ? '▲' : '▼'}</div>
+              <div className="standout-domain">{strongest.label}</div>
+              <div className="standout-score">{strongest.score}/100</div>
+              <div className="standout-bar-track">
+                <div className="standout-bar-fill green" style={{ '--target-width': `${strongest.score}%` }}></div>
+              </div>
+              {expandedCard === 'strongest' && (
+                <div className="standout-expanded">
+                  <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Activity</span><span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
+                </div>
+              )}
+            </div>
+            <div className="standout-card red" {...tilt} onClick={() => setExpandedCard(expandedCard === 'focus' ? null : 'focus')} style={{cursor:'pointer'}}>
+              <img className="standout-img" src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=200&q=80" alt="focus" />
+              <div className="standout-label">Focus here {expandedCard === 'focus' ? '▲' : '▼'}</div>
+              <div className="standout-domain">{priority.label}</div>
+              <div className="standout-score">{priority.score}/100</div>
+              <div className="standout-bar-track">
+                <div className="standout-bar-fill red" style={{ '--target-width': `${priority.score}%` }}></div>
+              </div>
+              {expandedCard === 'focus' && (
+                <div className="standout-expanded">
+                  <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Activity</span><span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
+                </div>
+              )}
+            </div>
+            {selectedSleepBand && (
+              <div className="standout-card blue" {...tilt} onClick={() => setExpandedCard(expandedCard === 'sleep' ? null : 'sleep')} style={{cursor:'pointer'}}>
+                <img className="standout-img" src="https://images.unsplash.com/photo-1586042091284-bd35c8c1d917?w=200&q=80" alt="sleep" />
+                <div className="standout-label">Your sleep {expandedCard === 'sleep' ? '▲' : '▼'}</div>
+                <div className="standout-domain">{selectedSleepBand.midpoint}h avg</div>
+                <div className="standout-score">Aus avg {SLEEP_AVERAGE_18_24.overall}h</div>
+                <div className="standout-bar-track">
+                  <div className="standout-bar-fill blue" style={{ '--target-width': `${(selectedSleepBand.midpoint / 10) * 100}%` }}></div>
+                </div>
+                {expandedCard === 'sleep' && (
+                  <div className="standout-expanded">
+                    <div className="standout-indicator"><span>Your sleep</span><span>{selectedSleepBand.midpoint}h</span></div>
+                    <div className="standout-indicator"><span>Aus avg (18-24)</span><span>{SLEEP_AVERAGE_18_24.overall}h</span></div>
+                    <div className="standout-indicator"><span>Sleep score</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="standout-card amber" {...tilt} onClick={() => setExpandedCard(expandedCard === 'overall' ? null : 'overall')} style={{cursor:'pointer'}}>
+              <img className="standout-img" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&q=80" alt="overall" />
+              <div className="standout-label">Overall vibe {expandedCard === 'overall' ? '▲' : '▼'}</div>
+              <div className="standout-domain">{snapshot.overallScore}/100</div>
+              <div className="standout-score">{snapshot.overallInterpretation}</div>
+              <div className="standout-bar-track">
+                <div className="standout-bar-fill amber" style={{ '--target-width': `${snapshot.overallScore}%` }}></div>
+              </div>
+              {expandedCard === 'overall' && (
+                <div className="standout-expanded">
+                  <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='screen_exposure')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Activity</span><span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* ── Reads ───────────────────────────────────────────────────────────── */}

@@ -505,9 +505,24 @@
 .dismissed-item { font-size: 13px; color: #90B4D4; padding: 4px 0; }
 
 /* ── Standout cards ────────────────────────────────────────────────────────── */
+/* ── Biggest shifts + What stands out side by side ── */
+.shifts-standout-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  align-items: start;
+}
+
+.shifts-col { display: flex; flex-direction: column; }
+.shifts-col .section-heading,
+.standout-col .section-heading { margin-top: 0; }
+
+.standout-col { display: flex; flex-direction: column; }
+
 .standout-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin-bottom: 0.5rem;
 }
@@ -615,6 +630,7 @@
 /* ── Responsive ────────────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .pet-section       { flex-direction: column; }
+  .shifts-standout-row { grid-template-columns: 1fr; }
   .pet-vitals        { border-left: none; padding-left: 0; margin-top: 1rem; width: 100%; }
   .pet-speech-arrow  { display: none; }
   .standout-grid     { grid-template-columns: repeat(2, 1fr); }
