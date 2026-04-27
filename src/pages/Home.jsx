@@ -99,7 +99,7 @@ function Home() {
             { n: "03", t: "Read what matters", d: "Articles and tips targeted at your lowest scores." },
           ].map(s => (
             <div key={s.n} className="how-step">
-              <div className="step-n">{s.n}</div>
+              <div className="step-n">{s.n}<em>step</em></div>
               <div className="step-t">{s.t}</div>
               <div className="step-d">{s.d}</div>
             </div>
@@ -110,9 +110,6 @@ function Home() {
         <div className="how-domain-cards">
           {DOMAINS.map(d => (
             <div key={d.label} className="how-domain-card" style={{ "--dc": d.color, "--dbg": d.bg }}>
-              <div className="how-domain-card-top">
-                <span className="how-domain-icon">{d.icon}</span>
-              </div>
               <div className="how-domain-card-label">{d.label}</div>
               <div className="how-domain-card-desc">{d.desc}</div>
             </div>

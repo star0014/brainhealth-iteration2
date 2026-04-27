@@ -310,7 +310,24 @@
 .how-step:last-child  { border-radius: 0 16px 16px 0; }
 .how-step:hover { background: white; box-shadow: 0 4px 20px rgba(37,99,235,0.08); }
 
-.step-n { font-size: 12px; font-weight: 700; color: rgba(37,99,235,0.3); letter-spacing: 0.05em; margin-bottom: 14px; }
+.step-n {
+  font-size: 36px;
+  font-weight: 800;
+  color: #0d1b2a;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.step-n em {
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 400;
+  color: #2563eb;
+  letter-spacing: 0;
+}
 .step-t { font-size: 18px; font-weight: 700; color: #0d1b2a; margin-bottom: 8px; letter-spacing: -0.3px; }
 .step-d { font-size: 14px; color: #64748b; line-height: 1.6; }
 
