@@ -4,10 +4,10 @@ import { getOrCreateGuestId } from "../utils/guestAuth"
 import "./Home.css"
 
 const DOMAINS = [
-  { icon: "🌙", label: "Sleep Rhythm",     color: "#1a6fa8", bg: "#e0f0ff" },
-  { icon: "⚡", label: "Move Mode",         color: "#1a7a5e", bg: "#dcf5ec" },
-  { icon: "🧠", label: "Cognitive Strain",  color: "#b45309", bg: "#fef3c7" },
-  { icon: "🤝", label: "Social Energy",     color: "#6b2fa0", bg: "#f3e8ff" },
+  { label: "Sleep Rhythm",     color: "#1a6fa8", bg: "#e0f0ff" },
+  { label: "Move Mode",         color: "#1a7a5e", bg: "#dcf5ec" },
+  { label: "Cognitive Strain",  color: "#b45309", bg: "#fef3c7" },
+  { label: "Social Energy",     color: "#6b2fa0", bg: "#f3e8ff" },
 ]
 
 function Home() {
