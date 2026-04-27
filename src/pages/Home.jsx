@@ -4,10 +4,10 @@ import { getOrCreateGuestId } from "../utils/guestAuth"
 import "./Home.css"
 
 const DOMAINS = [
-  { icon: "🌙", label: "Sleep Rhythm",     color: "#6C9FD4" },
-  { icon: "⚡", label: "Move Mode",         color: "#4ECBA1" },
-  { icon: "🧠", label: "Cognitive Strain",  color: "#F0A05A" },
-  { icon: "🤝", label: "Social Energy",    color: "#B98BE8" },
+  { icon: "🌙", label: "Sleep Rhythm",     color: "#1a6fa8", bg: "#e0f0ff" },
+  { icon: "⚡", label: "Move Mode",         color: "#1a7a5e", bg: "#dcf5ec" },
+  { icon: "🧠", label: "Cognitive Strain",  color: "#b45309", bg: "#fef3c7" },
+  { icon: "🤝", label: "Social Energy",     color: "#6b2fa0", bg: "#f3e8ff" },
 ]
 
 function Home() {
@@ -51,10 +51,6 @@ function Home() {
       {/* Hero — two column: text left, image right */}
       <section className="home-hero">
         <div className="hero-left">
-          <div className="hero-eyebrow">
-            <span className="eyebrow-dot" />
-            Free for university students
-          </div>
           <h1 className="hero-title">
             Your brain on<br />
             <span className="hero-title-accent">autopilot?</span>
@@ -73,10 +69,11 @@ function Home() {
               <button className="btn-main" onClick={handleGoToApp}>Get my snapshot</button>
             </SignedIn>
           </div>
-          <div className="domain-pills">
+          <div className="domain-grid">
             {DOMAINS.map(d => (
-              <div key={d.label} className="domain-pill" style={{ "--pill-color": d.color }}>
-                <span>{d.icon}</span> {d.label}
+              <div key={d.label} className="domain-card" style={{ "--dc": d.color, "--dbg": d.bg }}>
+                <span className="domain-card-icon">{d.icon}</span>
+                <span className="domain-card-label">{d.label}</span>
               </div>
             ))}
           </div>
@@ -84,7 +81,7 @@ function Home() {
         <div className="hero-right">
           <img
             className="hero-img"
-            src="https://blog.medicalert.org/wp-content/uploads/2025/03/Brain-Fog-Header-Image.jpg"
+            src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=700&q=80"
             alt="Brain health"
           />
         </div>
