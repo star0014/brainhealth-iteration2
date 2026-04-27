@@ -1,18 +1,25 @@
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
-import { useNavigate } from 'react-router-dom'
-import './Home.css'
+﻿import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/clerk-react"
+import { useNavigate } from "react-router-dom"
+import { getOrCreateGuestId } from "../utils/guestAuth"
+import "./Home.css"
 
 function Home() {
   const navigate = useNavigate()
 
   function handleGoToApp() {
-    const snapshot = JSON.parse(localStorage.getItem('brainboostSnapshot') || '{}')
+    const snapshot = JSON.parse(localStorage.getItem("brainboostSnapshot") || "{}")
     const completed = snapshot && Object.keys(snapshot).length > 0
     if (completed) {
-      navigate('/dashboard')
+      navigate("/dashboard")
     } else {
-      navigate('/onboarding')
+      navigate("/onboarding")
     }
+  }
+
+  function handleGuestLogin() {
+    getOrCreateGuestId()
+    localStorage.setItem("bb_is_guest", "true")
+    navigate("/onboarding")
   }
 
   return (
@@ -29,12 +36,12 @@ function Home() {
               <button className="btn-ghost">Sign In</button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <button className="btn-primary">Get Started →</button>
+              <button className="btn-primary">Get Started</button>
             </SignUpButton>
           </SignedOut>
           <SignedIn>
             <button className="btn-primary" onClick={handleGoToApp}>
-              Enter BrainBoost →
+              Enter BrainBoost
             </button>
             <UserButton />
           </SignedIn>
@@ -48,17 +55,17 @@ function Home() {
             Free for university students
           </div>
           <h1 className="home-title">
-            Is your brain<br />
+            Is your brain
             <span className="gradient-text">running on empty?</span>
           </h1>
           <p className="home-subtitle">
-            Sleep less, scroll more, skip the gym — sound familiar?
+            Sleep less, scroll more, skip the gym - sound familiar?
             See how your daily habits are affecting your brain health right now.
           </p>
           <div className="home-cta">
             <SignedOut>
               <SignUpButton mode="modal">
-                <button className="btn-hero">Check my brain health →</button>
+                <button className="btn-hero">Check my brain health</button>
               </SignUpButton>
               <SignInButton mode="modal">
                 <button className="btn-hero-ghost">Sign In</button>
@@ -66,16 +73,24 @@ function Home() {
             </SignedOut>
             <SignedIn>
               <button className="btn-hero" onClick={handleGoToApp}>
-                Check my brain health →
+                Check my brain health
               </button>
             </SignedIn>
           </div>
-          <p className="home-reassure">Takes 5 minutes · No medical knowledge needed · 100% free</p>
+          <SignedOut>
+            <button className="btn-guest" onClick={handleGuestLogin}>
+              Continue as Guest
+            </button>
+            <p className="home-reassure">Takes 5 minutes - No medical knowledge needed - 100% free</p>
+          </SignedOut>
+          <SignedIn>
+            <p className="home-reassure">Takes 5 minutes - No medical knowledge needed - 100% free</p>
+          </SignedIn>
         </div>
 
         <div className="home-hero-right">
           <img
-            src="https://images.unsplash.com/photo-1617791160505-6f00504e3519?w=600https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&q=80q=80"
+            src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=600&q=80"
             alt="Brain health"
             className="brain-hero-img"
           />
@@ -83,7 +98,7 @@ function Home() {
       </div>
 
       <div className="home-tagline">
-        <p>"Most students don't know what's draining their focus. <strong>Now you can.</strong>"</p>
+        <p>Most students do not know what is draining their focus. <strong>Now you can.</strong></p>
       </div>
 
       <div className="home-stats">
@@ -103,22 +118,22 @@ function Home() {
 
       <div className="home-final-cta">
         <h2>Ready to understand your brain?</h2>
-        <p>Join students who are taking control of their brain health — one habit at a time.</p>
+        <p>Join students who are taking control of their brain health one habit at a time.</p>
         <SignedOut>
           <SignUpButton mode="modal">
-            <button className="btn-hero">Check my brain health →</button>
+            <button className="btn-hero">Check my brain health</button>
           </SignUpButton>
         </SignedOut>
         <SignedIn>
           <button className="btn-hero" onClick={handleGoToApp}>
-            Check my brain health →
+            Check my brain health
           </button>
         </SignedIn>
       </div>
 
       <footer className="home-footer">
         <div className="home-logo">Brain<span>Boost</span></div>
-        <p>FIT5120 Team Tech N1nja · SDG 3 Good Health and Well-being</p>
+        <p>FIT5120 Team Tech N1nja - SDG 3 Good Health and Well-being</p>
       </footer>
     </div>
   )
