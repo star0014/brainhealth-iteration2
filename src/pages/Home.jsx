@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom"
 import { getOrCreateGuestId } from "../utils/guestAuth"
 import "./Home.css"
 
-
+const DOMAINS = [
+  { icon: "🌙", label: "Sleep Rhythm",    desc: "How your rest patterns shape daily energy and focus.",           color: "#1a6fa8", bg: "#e0f0ff" },
+  { icon: "⚡", label: "Move Mode",        desc: "How movement habits build resilience and mental clarity.",        color: "#1a7a5e", bg: "#dcf5ec" },
+  { icon: "🧠", label: "Cognitive Strain", desc: "How screen time and mental load affect your concentration.",      color: "#b45309", bg: "#fef3c7" },
+  { icon: "🤝", label: "Social Energy",   desc: "How social connections fuel or drain your overall wellbeing.",    color: "#6b2fa0", bg: "#f3e8ff" },
+]
 
 function Home() {
   const navigate = useNavigate()
@@ -53,25 +58,9 @@ function Home() {
           <p className="hero-sub">
             Find out how sleep, movement, screen time, and social habits are quietly shaping your focus — in under 5 minutes.
           </p>
-          <div className="hero-actions">
-            <SignedOut>
-              <SignUpButton mode="modal">
-                <button className="btn-main">Get my snapshot</button>
-              </SignUpButton>
+          <SignedOut>
               <button className="btn-ghost-link" onClick={handleGuestLogin}>Try as guest</button>
-            </SignedOut>
-            <SignedIn>
-              <button className="btn-main" onClick={handleGoToApp}>Get my snapshot</button>
-            </SignedIn>
-          </div>
-          <div className="domain-grid">
-            {DOMAINS.map(d => (
-              <div key={d.label} className="domain-card" style={{ "--dc": d.color, "--dbg": d.bg }}>
-                <span className="domain-card-icon">{d.icon}</span>
-                <span className="domain-card-label">{d.label}</span>
-              </div>
-            ))}
-          </div>
+          </SignedOut>
         </div>
         <div className="hero-right">
           <img
