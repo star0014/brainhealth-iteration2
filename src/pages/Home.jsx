@@ -4,10 +4,10 @@ import { getOrCreateGuestId } from "../utils/guestAuth"
 import "./Home.css"
 
 const DOMAINS = [
-  { icon: "🌙", label: "Sleep Rhythm",    desc: "How your rest patterns shape daily energy and focus.",           color: "#1a6fa8", bg: "#e0f0ff" },
-  { icon: "⚡", label: "Move Mode",        desc: "How movement habits build resilience and mental clarity.",        color: "#1a7a5e", bg: "#dcf5ec" },
-  { icon: "🧠", label: "Cognitive Strain", desc: "How screen time and mental load affect your concentration.",      color: "#b45309", bg: "#fef3c7" },
-  { icon: "🤝", label: "Social Energy",   desc: "How social connections fuel or drain your overall wellbeing.",    color: "#6b2fa0", bg: "#f3e8ff" },
+  { label: "Sleep Rhythm",    desc: "How your rest patterns shape daily energy and focus.",           color: "#1a6fa8", bg: "#e0f0ff" },
+  { label: "Move Mode",        desc: "How movement habits build resilience and mental clarity.",        color: "#1a7a5e", bg: "#dcf5ec" },
+  { label: "Cognitive Strain", desc: "How screen time and mental load affect your concentration.",      color: "#b45309", bg: "#fef3c7" },
+  { label: "Social Energy",   desc: "How social connections fuel or drain your overall wellbeing.",    color: "#6b2fa0", bg: "#f3e8ff" },
 ]
 
 function Home() {
@@ -65,7 +65,7 @@ function Home() {
         <div className="hero-right">
           <img
             className="hero-img"
-            src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=700&q=80"
+            src="https://blog.medicalert.org/wp-content/uploads/2025/03/Brain-Fog-Header-Image.jpg"
             alt="Brain health"
           />
         </div>
