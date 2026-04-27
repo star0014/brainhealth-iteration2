@@ -84,7 +84,7 @@ function Home() {
         <div className="hero-right">
           <img
             className="hero-img"
-            src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=700&q=80"
+            src="https://blog.medicalert.org/wp-content/uploads/2025/03/Brain-Fog-Header-Image.jpg"
             alt="Brain health"
           />
         </div>
