@@ -586,7 +586,7 @@ function Dashboard() {
         <div className="dash-date">{today}</div>
       </div>
 
-      {/* ── Pet section ────────────────────────────────────────────────────── */}
+      {/* ── Pet + Vitals section (side by side) ─────────────────────────────── */}
       <div className="pet-section">
         <div className="pet-left">
           <BrainPet petState={petState} onPoke={handlePoke} isPoking={isPoking} />
@@ -595,7 +595,7 @@ function Dashboard() {
           </button>
         </div>
 
-        <div className="pet-right">
+        <div className="pet-middle">
           <div className="pet-name-row">
             <div className="pet-name">Brainy</div>
             <div className={`pet-status-badge ${PET_STATES[petState].badgeClass}`}>
@@ -615,36 +615,35 @@ function Dashboard() {
             </span>
           </div>
         </div>
-      </div>
 
-      {/* ── Pet stats (domain scores) ───────────────────────────────────────── */}
-      <div className="section-heading">Brainy's vitals</div>
-      <div className="pet-stats-card" {...tilt}>
-        {snapshot.domainScores.map((domain) => {
-          const meta = PET_STAT_META[domain.key]
-          const tone = statusTone(domain.score)
-          return (
-            <div key={domain.key} className="pet-stat-row">
-              <div className="pet-stat-icon-label">
-                <span className="pet-stat-icon">{meta.icon}</span>
-                <span className="pet-stat-label">{meta.label}</span>
-              </div>
-              <div className="pet-stat-track">
-                <div
-                  className={`pet-stat-fill tone-${tone}`}
-                  style={{ '--stat-w': `${domain.score}%` }}
-                />
-                <div className="pet-stat-segments">
-                  {Array.from({ length: 10 }).map((_, i) => (
-                    <div key={i} className="pet-stat-seg" />
-                  ))}
+        <div className="pet-vitals">
+          <div className="pet-vitals-heading">Brainy's Vitals</div>
+          {snapshot.domainScores.map((domain) => {
+            const meta = PET_STAT_META[domain.key]
+            const tone = statusTone(domain.score)
+            return (
+              <div key={domain.key} className="pet-stat-row">
+                <div className="pet-stat-icon-label">
+                  <span className="pet-stat-icon">{meta.icon}</span>
+                  <span className="pet-stat-label">{meta.label}</span>
                 </div>
+                <div className="pet-stat-track">
+                  <div
+                    className={`pet-stat-fill tone-${tone}`}
+                    style={{ '--stat-w': `${domain.score}%` }}
+                  />
+                  <div className="pet-stat-segments">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <div key={i} className="pet-stat-seg" />
+                    ))}
+                  </div>
+                </div>
+                <div className={`pet-stat-num tone-${tone}`}>{domain.score}</div>
+                <div className={`pet-stat-copy tone-${tone}`}>{statusCopy(domain.score)}</div>
               </div>
-              <div className={`pet-stat-num tone-${tone}`}>{domain.score}</div>
-              <div className={`pet-stat-copy tone-${tone}`}>{statusCopy(domain.score)}</div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
 
       {/* ── Biggest shifts ──────────────────────────────────────────────────── */}
