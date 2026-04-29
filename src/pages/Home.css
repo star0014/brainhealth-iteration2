@@ -62,7 +62,7 @@
   background: transparent;
   color: #2563eb;
   border-radius: 50px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
@@ -76,7 +76,7 @@
   color: white;
   border: none;
   border-radius: 50px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
@@ -142,7 +142,7 @@
 
 /* Subtitle */
 .hero-sub {
-  font-size: 18px;
+  font-size: 20px;
   color: #4a5568;
   line-height: 1.7;
   margin-bottom: 36px;
@@ -272,7 +272,7 @@
   letter-spacing: 0;
 }
 
-.stat-desc { font-size: 13px; color: #94a3b8; font-weight: 500; }
+.stat-desc { font-size: 15px; color: #94a3b8; font-weight: 500; }
 .stat-divider { display: none; }
 
 /* ── How it works ── */
@@ -285,7 +285,7 @@
 }
 
 .how-label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -324,13 +324,13 @@
 }
 .step-n em {
   font-style: normal;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
   color: #2563eb;
   letter-spacing: 0;
 }
 .step-t { font-size: 22px; font-weight: 700; color: #0d1b2a; margin-bottom: 10px; letter-spacing: -0.4px; }
-.step-d { font-size: 15px; color: #64748b; line-height: 1.6; }
+.step-d { font-size: 17px; color: #64748b; line-height: 1.6; }
 
 /* ── Final CTA ── */
 .final-cta {
@@ -348,7 +348,7 @@
 }
 
 .final-cta-kicker {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -399,7 +399,7 @@
 
 /* ── What we measure domain cards (below how-steps) ─────────────────────── */
 .how-domains-label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -442,14 +442,14 @@
 }
 
 .how-domain-card-label {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--dc, #1a6fa8);
   letter-spacing: -0.2px;
 }
 
 .how-domain-card-desc {
-  font-size: 13px;
+  font-size: 15px;
   color: #4a5568;
   line-height: 1.55;
 }
