@@ -1,27 +1,41 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import './HabitTracker.css'
 
 const API = 'http://localhost:3001/api'
+const LS_KEY = 'bb_guest_habits'
 
+const isGuest = () => localStorage.getItem('bb_is_guest') === 'true'
+
+// ── localStorage helpers ────────────────────────────────────────────────────
+function guestLoadHabits() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]') } catch { return [] }
+}
+
+function guestSaveHabit(entry) {
+  const habits = guestLoadHabits()
+  const idx = habits.findIndex(h => h.date === entry.date)
+  if (idx >= 0) habits[idx] = { ...habits[idx], ...entry }
+  else habits.unshift({ id: Date.now(), ...entry })
+  localStorage.setItem(LS_KEY, JSON.stringify(habits))
+  return habits
+}
+
+// ── Icons ───────────────────────────────────────────────────────────────────
 const MoonIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
   </svg>
 )
-
 const ScreenIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="3" width="20" height="14" rx="2"/>
-    <path d="M8 21h8M12 17v4"/>
+    <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
   </svg>
 )
-
 const RunIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="13" cy="4" r="1"/>
-    <path d="M7 21l3-7 2 2 3-5 2 4M5 14l2-4 4 2 2-4"/>
+    <circle cx="13" cy="4" r="1"/><path d="M7 21l3-7 2 2 3-5 2 4M5 14l2-4 4 2 2-4"/>
   </svg>
 )
 
@@ -34,6 +48,8 @@ const sleepToNum = s => {
 
 function HabitTracker() {
   const { getToken } = useAuth()
+  const guest = isGuest()
+
   const [habits, setHabits] = useState([])
   const [todayCheckin, setTodayCheckin] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -41,75 +57,83 @@ function HabitTracker() {
   const [view, setView] = useState('checkin')
   const [historyRange, setHistoryRange] = useState(7)
   const [successMsg, setSuccessMsg] = useState('')
-  const [form, setForm] = useState({
-    sleep_hours: '',
-    screen_time: '',
-    physical_activity: false
-  })
+  const [form, setForm] = useState({ sleep_hours: '', screen_time: '', physical_activity: false })
 
   const today = new Date().toLocaleDateString('en-CA')
 
-  useEffect(() => { fetchHabits() }, [])
+  useEffect(() => { loadHabits() }, [])
 
-  async function fetchHabits() {
+  // ── Load ──────────────────────────────────────────────────────────────────
+  async function loadHabits() {
+    if (guest) {
+      const data = guestLoadHabits()
+      setHabits(data)
+      const todayData = data.find(h => h.date === today)
+      if (todayData) {
+        setTodayCheckin(todayData)
+        setForm({ sleep_hours: todayData.sleep_hours, screen_time: todayData.screen_time, physical_activity: todayData.physical_activity })
+      }
+      setLoading(false)
+      return
+    }
     try {
       const token = await getToken()
-      const res = await fetch(`${API}/habits`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const res = await fetch(`${API}/habits`, { headers: { Authorization: `Bearer ${token}` } })
       const data = await res.json()
       if (!Array.isArray(data)) { setLoading(false); return }
       setHabits(data)
       const todayData = data.find(h => h.date && new Date(h.date).toLocaleDateString('en-CA') === today)
       if (todayData) {
         setTodayCheckin(todayData)
-        setForm({
-          sleep_hours: todayData.sleep_hours,
-          screen_time: todayData.screen_time,
-          physical_activity: todayData.physical_activity
-        })
+        setForm({ sleep_hours: todayData.sleep_hours, screen_time: todayData.screen_time, physical_activity: todayData.physical_activity })
       }
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
+    } catch (err) { console.error(err) }
+    finally { setLoading(false) }
   }
 
+  // ── Save ──────────────────────────────────────────────────────────────────
   async function handleSubmit() {
     if (!form.sleep_hours || !form.screen_time) return
     setSaving(true)
     try {
-      const token = await getToken()
-      const method = todayCheckin ? 'PUT' : 'POST'
-      const url = todayCheckin ? `${API}/habits/${today}` : `${API}/habits`
-      const res = await fetch(url, {
-        method,
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, date: today })
-      })
-      if (res.ok) {
+      if (guest) {
+        const updated = guestSaveHabit({ ...form, date: today })
+        setHabits(updated)
+        const saved = updated.find(h => h.date === today)
+        setTodayCheckin(saved)
         setSuccessMsg(todayCheckin ? 'Check-in updated!' : 'Check-in saved!')
         setTimeout(() => setSuccessMsg(''), 3000)
-        fetchHabits()
+      } else {
+        const token = await getToken()
+        const method = todayCheckin ? 'PUT' : 'POST'
+        const url = todayCheckin ? `${API}/habits/${today}` : `${API}/habits`
+        const res = await fetch(url, {
+          method,
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...form, date: today })
+        })
+        if (res.ok) {
+          setSuccessMsg(todayCheckin ? 'Check-in updated!' : 'Check-in saved!')
+          setTimeout(() => setSuccessMsg(''), 3000)
+          loadHabits()
+        }
       }
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setSaving(false)
-    }
+    } catch (err) { console.error(err) }
+    finally { setSaving(false) }
   }
 
   const filteredHabits = habits.slice(0, historyRange)
 
   const chartData = (() => {
-    const days = historyRange
     const result = []
-    for (let i = days - 1; i >= 0; i--) {
+    for (let i = historyRange - 1; i >= 0; i--) {
       const d = new Date()
       d.setDate(d.getDate() - i)
       const dateStr = d.toLocaleDateString('en-CA')
-      const habit = habits.find(h => new Date(h.date).toLocaleDateString('en-CA') === dateStr)
+      const habit = habits.find(h => {
+        const hDate = guest ? h.date : new Date(h.date).toLocaleDateString('en-CA')
+        return hDate === dateStr
+      })
       result.push({
         date: d.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric' }),
         sleep: habit ? sleepToNum(habit.sleep_hours) : null,
@@ -134,6 +158,17 @@ function HabitTracker() {
 
   return (
     <div className="ht-page">
+
+      {/* Guest nudge banner */}
+      {guest && (
+        <div className="ht-guest-banner">
+          <span>🔒 You're in guest mode — your data is saved on this device only.</span>
+          <SignUpButton mode="modal">
+            <button className="ht-guest-cta">Sign up free to sync across devices →</button>
+          </SignUpButton>
+        </div>
+      )}
+
       <div className="ht-hero">
         <div className="ht-hero-text">
           <h1>Habit Tracker</h1>
@@ -152,20 +187,14 @@ function HabitTracker() {
       </div>
 
       <div className="ht-tabs">
-        <button className={`ht-tab ${view === 'checkin' ? 'active' : ''}`} onClick={() => setView('checkin')}>
-          Today's Check-in
-        </button>
-        <button className={`ht-tab ${view === 'history' ? 'active' : ''}`} onClick={() => setView('history')}>
-          History & Charts
-        </button>
+        <button className={`ht-tab ${view === 'checkin' ? 'active' : ''}`} onClick={() => setView('checkin')}>Today's Check-in</button>
+        <button className={`ht-tab ${view === 'history' ? 'active' : ''}`} onClick={() => setView('history')}>History & Charts</button>
       </div>
 
       {view === 'checkin' && (
         <div className="ht-checkin">
           {todayCheckin && (
-            <div className="ht-already-done">
-              You've already checked in today — update your entry below if needed.
-            </div>
+            <div className="ht-already-done">You've already checked in today — update your entry below if needed.</div>
           )}
           <div className="ht-card">
             <div className="ht-field">
