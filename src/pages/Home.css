@@ -241,7 +241,7 @@
 .stat-item {
   background: white;
   border: 1px solid rgba(37,99,235,0.1);
-  padding: 28px 50px;
+  padding: 36px 50px;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   flex: 1;
@@ -249,29 +249,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 .stat-item:first-child { border-radius: 16px 0 0 16px; }
 .stat-item:last-child  { border-radius: 0 16px 16px 0; }
 .stat-item:not(:first-child) { border-left: none; }
 
 .stat-big {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 52px;
+  font-weight: 800;
   color: #0d1b2a;
-  letter-spacing: -1px;
+  letter-spacing: -2px;
   display: flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 6px;
 }
 .stat-big em {
   font-style: normal;
   color: #2563eb;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 600;
+  letter-spacing: 0;
 }
 
-.stat-desc { font-size: 12px; color: #94a3b8; font-weight: 500; }
+.stat-desc { font-size: 13px; color: #94a3b8; font-weight: 500; }
 .stat-divider { display: none; }
 
 /* ── How it works ── */
@@ -284,7 +285,7 @@
 }
 
 .how-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -328,8 +329,8 @@
   color: #2563eb;
   letter-spacing: 0;
 }
-.step-t { font-size: 18px; font-weight: 700; color: #0d1b2a; margin-bottom: 8px; letter-spacing: -0.3px; }
-.step-d { font-size: 14px; color: #64748b; line-height: 1.6; }
+.step-t { font-size: 22px; font-weight: 700; color: #0d1b2a; margin-bottom: 10px; letter-spacing: -0.4px; }
+.step-d { font-size: 15px; color: #64748b; line-height: 1.6; }
 
 /* ── Final CTA ── */
 .final-cta {
