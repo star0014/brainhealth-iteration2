@@ -209,7 +209,7 @@
 
 /* Status badge */
 .pet-status-badge {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   padding: 4px 12px;
   border-radius: 20px;
@@ -360,8 +360,8 @@
 }
 
 .pet-stat-copy {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   text-align: left;
 }
 
@@ -376,11 +376,11 @@
 
 /* ── Section headings ──────────────────────────────────────────────────────── */
 .section-heading {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #90B4D4;
+  color: #1e293b;
   margin-bottom: 12px;
   margin-top: 2rem;
 }
@@ -508,7 +508,7 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.standout-label { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #374151; }
+.standout-label { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #1e293b; }
 .standout-domain { font-size: 14px; font-weight: 600; color: #1A2E28; line-height: 1.3; }
 .standout-score  { font-size: 13px; color: #374151; font-weight: 500; }
 
@@ -561,7 +561,7 @@
 .read-img  { width: 100%; height: 120px; object-fit: cover; }
 .read-body { padding: 0.75rem; }
 
-.read-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px; }
+.read-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
 .read-tag.sleep_rhythm     { color: #4A9EDB; }
 .read-tag.move_mode        { color: #1D9E75; }
 .read-tag.cognitive_strain { color: #D85A30; }
@@ -649,10 +649,10 @@
 }
 
 .pet-vitals-heading {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #374151;
+  color: #1e293b;
   margin-bottom: 2px;
 }
