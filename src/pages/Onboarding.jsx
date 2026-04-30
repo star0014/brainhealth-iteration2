@@ -1,208 +1,176 @@
-// Onboarding page — walks the user through a 4-question brain health questionnaire
-// and shows a score summary before redirecting to the Dashboard.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Onboarding.css'
 import { calculateSnapshotFromResponses } from '../utils/scoring'
 
-// The four questionnaire steps in display order.
-// Each step maps to a domain and contains a single multiple-choice question.
 const QUESTIONNAIRE_STEPS = [
   {
     key: 'sleep_rhythm',
-    eyebrow: 'Domain 1',
+    eyebrow: 'Domain 1 of 4',
     title: 'Sleep Rhythm',
-    description:
-      'A quick check on how much sleep you usually get so we can place your snapshot against healthy habit patterns.',
+    emoji: '🌙',
+    vibe: 'How are you actually sleeping?',
+    description: 'No judgment — just tell us what a typical night looks like.',
+    accent: '#4A9EDB',
+    accentBg: 'linear-gradient(135deg, #e0f0ff 0%, #c8e4f8 100%)',
     question: {
       id: 'Q1',
       text: 'On most nights, how many hours of sleep do you usually get?',
       options: [
-        'Less than 6 hours',
-        '6 to less than 7 hours',
-        '7 to less than 8 hours',
-        '8 to less than 9 hours',
-        '9 hours or more',
+        { label: 'Under 6 hrs',  sub: 'running on empty', emoji: '😵' },
+        { label: '6–7 hrs',      sub: 'a bit short',      emoji: '😴' },
+        { label: '7–8 hrs',      sub: 'pretty solid',     emoji: '😌' },
+        { label: '8–9 hrs',      sub: 'well rested',      emoji: '😊' },
+        { label: '9+ hrs',       sub: 'love to see it',   emoji: '🌟' },
       ],
     },
   },
   {
     key: 'move_mode',
-    eyebrow: 'Domain 2',
+    eyebrow: 'Domain 2 of 4',
     title: 'Move Mode',
-    description:
-      'This helps us estimate how active your routine is across a usual week, not just on your best days.',
+    emoji: '⚡',
+    vibe: 'How much do you actually move?',
+    description: 'Be real — we want your actual week, not your best week.',
+    accent: '#1D9E75',
+    accentBg: 'linear-gradient(135deg, #dcf5ec 0%, #b8ecd8 100%)',
     question: {
       id: 'Q2',
-      text: 'In a usual week, on how many days are you physically active for at least 30 minutes?',
-      options: ['0 days', '1-2 days', '3-4 days', '5-6 days', '7 days'],
+      text: 'In a usual week, how many days are you physically active for 30+ min?',
+      options: [
+        { label: '0 days',    sub: 'full rest mode',      emoji: '🛋️' },
+        { label: '1–2 days',  sub: 'barely moving',       emoji: '🐢' },
+        { label: '3–4 days',  sub: 'getting there',       emoji: '🚶' },
+        { label: '5–6 days',  sub: 'consistently active', emoji: '🏃' },
+        { label: 'Every day', sub: 'beast mode',          emoji: '🔥' },
+      ],
     },
   },
   {
     key: 'screen_exposure',
-    eyebrow: 'Domain 3',
+    eyebrow: 'Domain 3 of 4',
     title: 'Screen Exposure',
-    description:
-      'Late-evening screen time can shape sleep quality, focus, and mental reset, so this checks your daily screen load.',
+    emoji: '📱',
+    vibe: 'How much late-night scrolling?',
+    description: "Late-evening screen time hits different for your brain — let's check in.",
+    accent: '#D97855',
+    accentBg: 'linear-gradient(135deg, #fef3e0 0%, #fde4b8 100%)',
     question: {
       id: 'Q3',
-      text: 'On average, how many hours per day do you spend on screens, particularly during the late evening or before sleep?',
+      text: 'How many hours a day are you on screens — especially in the evening?',
       options: [
-        'Less than 2 hours',
-        '2-4 hours',
-        '4-6 hours',
-        '6-8 hours',
-        'More than 8 hours',
+        { label: 'Under 2 hrs', sub: 'healthy boundary', emoji: '✅' },
+        { label: '2–4 hrs',     sub: 'moderate use',     emoji: '📊' },
+        { label: '4–6 hrs',     sub: 'kinda a lot',      emoji: '😬' },
+        { label: '6–8 hrs',     sub: 'doom scrolling',   emoji: '📲' },
+        { label: '8+ hrs',      sub: 'send help',        emoji: '💀' },
       ],
     },
   },
   {
     key: 'social_energy',
-    eyebrow: 'Domain 4',
+    eyebrow: 'Domain 4 of 4',
     title: 'Social Energy',
-    description:
-      'This looks at whether you have been feeling meaningfully connected to other people lately.',
+    emoji: '🤝',
+    vibe: 'Feeling connected lately?',
+    description: 'Real connection, not just being online. How plugged in do you feel?',
+    accent: '#9B59B6',
+    accentBg: 'linear-gradient(135deg, #f3e8ff 0%, #e8d5ff 100%)',
     question: {
       id: 'Q4',
-      text: 'Over the past 2 weeks, how often did you feel meaningfully connected to other people?',
-      options: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'],
+      text: 'Over the past 2 weeks, how often did you feel genuinely connected to others?',
+      options: [
+        { label: 'Never',     sub: 'feeling isolated', emoji: '🌑' },
+        { label: 'Rarely',    sub: 'mostly solo',      emoji: '🌘' },
+        { label: 'Sometimes', sub: 'hit or miss',      emoji: '🌗' },
+        { label: 'Often',     sub: 'well connected',   emoji: '🌕' },
+        { label: 'Always',    sub: 'fully plugged in', emoji: '✨' },
+      ],
     },
   },
 ]
 
-// Geometry for the animated SVG score ring on the result screen
 const SCORE_RING_RADIUS        = 50
 const SCORE_RING_CIRCUMFERENCE = 2 * Math.PI * SCORE_RING_RADIUS
 
-// Returns the colour tone and message for the result screen based on the overall score
 function getScoreTone(score) {
-  if (score >= 75) {
-    return {
-      tone:    'high',
-      kicker:  'Recovery-style snapshot',
-      message: 'You are showing a strong base right now. Keep protecting the habits doing the heavy lifting.',
-    }
-  }
-  if (score >= 50) {
-    return {
-      tone:    'mid',
-      kicker:  'Recovery-style snapshot',
-      message: 'Your baseline is decent, but one or two habits are dragging the full picture down.',
-    }
-  }
-  return {
-    tone:    'low',
-    kicker:  'Recovery-style snapshot',
-    message: 'Your system looks under pressure right now. Start with the lowest-scoring area first.',
-  }
+  if (score >= 75) return { tone: 'high', kicker: 'Recovery-style snapshot', message: 'You are showing a strong base right now. Keep protecting the habits doing the heavy lifting.' }
+  if (score >= 50) return { tone: 'mid',  kicker: 'Recovery-style snapshot', message: 'Your baseline is decent, but one or two habits are dragging the full picture down.' }
+  return { tone: 'low', kicker: 'Recovery-style snapshot', message: 'Your system looks under pressure right now. Start with the lowest-scoring area first.' }
 }
 
-// Splits domain scores into the top 2 (strengths) and bottom 2 (priorities) for the result screen
 function buildInsights(domainEntries) {
   const sorted = [...domainEntries].sort((a, b) => b.score - a.score)
-  return {
-    strengths:  sorted.slice(0, 2),
-    priorities: sorted.slice(-2).reverse(),
-  }
+  return { strengths: sorted.slice(0, 2), priorities: sorted.slice(-2).reverse() }
 }
 
-// Animates a number counting up from 0 to the target value using an ease-out curve
 function AnimatedScore({ value, duration = 1100 }) {
   const [displayValue, setDisplayValue] = useState(0)
-
   useEffect(() => {
     let frameId
     const start = performance.now()
-
     const tick = (now) => {
       const progress = Math.min((now - start) / duration, 1)
-      const eased    = 1 - Math.pow(1 - progress, 3) // cubic ease-out
+      const eased = 1 - Math.pow(1 - progress, 3)
       setDisplayValue(Math.round(value * eased))
-
-      if (progress < 1) {
-        frameId = requestAnimationFrame(tick)
-      }
+      if (progress < 1) frameId = requestAnimationFrame(tick)
     }
-
     frameId = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frameId)
   }, [value, duration])
-
   return displayValue
 }
 
-// Assembles the snapshot object that gets saved to localStorage and passed to the Dashboard.
-// Returns null if scoring hasn't been computed yet (incomplete questionnaire).
 function createDashboardPayload(scoring, responses) {
   if (!scoring) return null
-
-  // Flatten domain scores into a flat responses map for Dashboard chart lookups
   const dashboardResponses = {
     Q1: scoring.normalizedResponses.Q1,
     Q2: scoring.normalizedResponses.Q2,
     Q3: scoring.normalizedResponses.Q3,
     Q4: scoring.normalizedResponses.Q4,
-    Q4_social: scoring.normalizedResponses.Q4, // duplicate kept for legacy compatibility
+    Q4_social: scoring.normalizedResponses.Q4,
   }
-
   return {
-    onboardingCompleted:      true,
-    completedAt:              new Date().toISOString(),
-    questionnaireVersion:     'iteration-1-final-4q',
-    responses:                dashboardResponses,
-    questionnaireResponses:   responses,       // raw answers for re-scoring on Dashboard
-    overallScore:             scoring.overallScore,
-    overallInterpretation:    scoring.overallInterpretation,
-    domainScores:             scoring.domainScoresLegacy,
+    onboardingCompleted: true,
+    completedAt: new Date().toISOString(),
+    questionnaireVersion: 'iteration-1-final-4q',
+    responses: dashboardResponses,
+    questionnaireResponses: responses,
+    overallScore: scoring.overallScore,
+    overallInterpretation: scoring.overallInterpretation,
+    domainScores: scoring.domainScoresLegacy,
   }
 }
 
 function Onboarding() {
-  const navigate  = useNavigate()
-  const [step, setStep]                     = useState(0)
-  const [responses, setResponses]           = useState({})       // stores { Q1: 3, Q2: 2, ... }
-  const [showValidation, setShowValidation] = useState(false)    // shows "please answer" prompt
-  const totalSteps  = QUESTIONNAIRE_STEPS.length + 1             // 4 questions + 1 result screen
+  const navigate = useNavigate()
+  const [step, setStep] = useState(0)
+  const [responses, setResponses] = useState({})
+  const [showValidation, setShowValidation] = useState(false)
+  const totalSteps = QUESTIONNAIRE_STEPS.length + 1
 
-  const currentStep  = QUESTIONNAIRE_STEPS[step]
-  const isResultStep = step === QUESTIONNAIRE_STEPS.length       // true when all questions are done
+  const currentStep = QUESTIONNAIRE_STEPS[step]
+  const isResultStep = step === QUESTIONNAIRE_STEPS.length
 
-  // Records the user's answer for a given question and clears the validation warning
   const setAnswer = (questionId, value) => {
-    setResponses((current) => ({ ...current, [questionId]: value }))
+    setResponses((c) => ({ ...c, [questionId]: value }))
     setShowValidation(false)
   }
 
-  // True if the current question has been answered (result screen is always "complete")
   const stepComplete = currentStep ? Boolean(responses[currentStep.question.id]) : true
 
   const nextStep = () => {
-    if (!stepComplete) {
-      setShowValidation(true)
-      return
-    }
+    if (!stepComplete) { setShowValidation(true); return }
     if (step === QUESTIONNAIRE_STEPS.length - 1) {
       const payload = createDashboardPayload(calculateSnapshotFromResponses(responses), responses)
-      if (payload) {
-        localStorage.setItem('brainboostSnapshot', JSON.stringify(payload))
-        navigate('/dashboard', { state: payload })
-      }
+      if (payload) { localStorage.setItem('brainboostSnapshot', JSON.stringify(payload)); navigate('/dashboard', { state: payload }) }
       return
     }
-    if (step < QUESTIONNAIRE_STEPS.length) {
-      setStep(step + 1)
-      setShowValidation(false)
-    }
+    if (step < QUESTIONNAIRE_STEPS.length) { setStep(step + 1); setShowValidation(false) }
   }
 
-  const prevStep = () => {
-    if (step > 0) {
-      setStep(step - 1)
-      setShowValidation(false)
-    }
-  }
+  const prevStep = () => { if (step > 0) { setStep(step - 1); setShowValidation(false) } }
 
-  // Recalculate the score every time responses change
   const scoring        = calculateSnapshotFromResponses(responses)
   const domainScores   = scoring?.domainScoresLatest ?? []
   const overallScore   = scoring?.overallScore ?? 0
@@ -211,24 +179,17 @@ function Onboarding() {
   const progressPercent = ((step + 1) / totalSteps) * 100
   const scoreTone      = getScoreTone(overallScore)
 
-  // Called when the user clicks "Go to my dashboard" on the result screen.
-  // Saves the snapshot and navigates, passing state so the Dashboard renders immediately.
   const handleGoToDashboard = () => {
     const payload = createDashboardPayload(scoring, responses)
     if (!payload) return
-
     localStorage.setItem('brainboostSnapshot', JSON.stringify(payload))
     navigate('/dashboard', { state: payload })
   }
 
-  // Also save to localStorage as soon as the result step renders,
-  // so the data is persisted even if the user refreshes before clicking the button.
   useEffect(() => {
     if (!isResultStep) return
-
     const payload = createDashboardPayload(scoring, responses)
     if (!payload) return
-
     localStorage.setItem('brainboostSnapshot', JSON.stringify(payload))
     navigate('/dashboard', { state: payload })
   }, [isResultStep, responses, scoring])
@@ -239,6 +200,7 @@ function Onboarding() {
       <div className="ob-ambient ob-ambient-two"></div>
       <div className="ob-ambient ob-ambient-three"></div>
 
+      {/* Progress bar */}
       <div className="ob-progress-row">
         <div className="ob-progress-track">
           <div className="ob-progress-fill" style={{ width: `${progressPercent}%` }}></div>
@@ -249,12 +211,17 @@ function Onboarding() {
       <div className="ob-card">
         {!isResultStep && (
           <div>
-            <div className="ob-step-meta">
-              <span className="ob-step-pill">{currentStep.title}</span>
-              <span className="ob-step-pill soft">{Math.round(progressPercent)}% done</span>
+            {/* Domain header banner */}
+            <div className="ob-domain-header" style={{ background: currentStep.accentBg }}>
+              <span className="ob-domain-emoji">{currentStep.emoji}</span>
+              <div className="ob-domain-header-text">
+                <div className="ob-domain-eyebrow" style={{ color: currentStep.accent }}>{currentStep.eyebrow}</div>
+                <div className="ob-domain-title">{currentStep.title}</div>
+              </div>
+              <span className="ob-domain-pct" style={{ color: currentStep.accent }}>{Math.round(progressPercent)}%</span>
             </div>
-            <div className="ob-eyebrow">{currentStep.eyebrow}</div>
-            <div className="ob-title">{currentStep.title}</div>
+
+            <div className="ob-vibe">{currentStep.vibe}</div>
             <div className="ob-desc">{currentStep.description}</div>
 
             <div className="question-list">
@@ -264,16 +231,20 @@ function Onboarding() {
                   {currentStep.question.options.map((option, index) => {
                     const value = index + 1
                     const selected = responses[currentStep.question.id] === value
-
                     return (
                       <button
-                        key={option}
+                        key={option.label}
                         type="button"
-                        className={`opt-btn answer-option ${selected ? 'selected' : ''}`}
+                        className={`opt-btn ob-opt-new ${selected ? 'selected' : ''}`}
+                        style={selected ? { borderColor: currentStep.accent, boxShadow: `0 6px 24px ${currentStep.accent}30` } : {}}
                         onClick={() => setAnswer(currentStep.question.id, value)}
                       >
-                        <span className="answer-scale">{value}</span>
-                        <span className="answer-label">{option}</span>
+                        <span className="ob-opt-emoji">{option.emoji}</span>
+                        <span className="ob-opt-text">
+                          <span className="ob-opt-label">{option.label}</span>
+                          <span className="ob-opt-sub">{option.sub}</span>
+                        </span>
+                        {selected && <span className="ob-opt-check" style={{ color: currentStep.accent }}>✓</span>}
                       </button>
                     )
                   })}
@@ -287,14 +258,17 @@ function Onboarding() {
 
             <div className="ob-footer">
               {step > 0 ? (
-                <button type="button" className="btn-back" onClick={prevStep}>
-                  Back
-                </button>
+                <button type="button" className="btn-back" onClick={prevStep}>Back</button>
               ) : (
                 <div className="btn-spacer"></div>
               )}
-              <button type="button" className="btn-next" onClick={nextStep}>
-                Continue
+              <button
+                type="button"
+                className="btn-next"
+                style={{ background: `linear-gradient(135deg, ${currentStep.accent}, ${currentStep.accent}cc)` }}
+                onClick={nextStep}
+              >
+                Continue →
               </button>
             </div>
           </div>
@@ -318,30 +292,17 @@ function Onboarding() {
               <div className="snapshot-copy">
                 <div className="snapshot-kicker">{scoreTone.kicker}</div>
                 <div className="snapshot-headline">{interpretation}</div>
-                <div className="snapshot-body">
-                  {scoreTone.message}
-                </div>
+                <div className="snapshot-body">{scoreTone.message}</div>
               </div>
-
               <div className="score-ring-wrap">
                 <div className={`score-ring tone-${scoreTone.tone}`}>
                   <div className="score-ring-glow"></div>
                   <svg className="score-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
                     <circle cx="60" cy="60" r={SCORE_RING_RADIUS} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="10" />
-                    <circle
-                      cx="60"
-                      cy="60"
-                      r={SCORE_RING_RADIUS}
-                      fill="none"
-                      stroke="url(#scoreGradient)"
-                      strokeWidth="10"
+                    <circle cx="60" cy="60" r={SCORE_RING_RADIUS} fill="none" stroke="url(#scoreGradient)" strokeWidth="10"
                       strokeDasharray={SCORE_RING_CIRCUMFERENCE}
-                      strokeDashoffset={
-                        SCORE_RING_CIRCUMFERENCE - (SCORE_RING_CIRCUMFERENCE * overallScore) / 100
-                      }
-                      strokeLinecap="round"
-                      transform="rotate(-90 60 60)"
-                    />
+                      strokeDashoffset={SCORE_RING_CIRCUMFERENCE - (SCORE_RING_CIRCUMFERENCE * overallScore) / 100}
+                      strokeLinecap="round" transform="rotate(-90 60 60)" />
                     <defs>
                       <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#8ed8ff" />
@@ -351,9 +312,7 @@ function Onboarding() {
                     </defs>
                   </svg>
                   <div className="score-number">
-                    <div className="score-num">
-                      <AnimatedScore value={overallScore} />
-                    </div>
+                    <div className="score-num"><AnimatedScore value={overallScore} /></div>
                     <div className="score-sub">/ 100</div>
                   </div>
                 </div>
@@ -362,49 +321,31 @@ function Onboarding() {
             </div>
 
             <div className="result-tagline">
-              Your final score comes from four adjusted question scores, with screen exposure
-              reverse-scored so a higher total always means stronger current habits.
+              Your score reflects four key habit areas — higher always means stronger current habits.
             </div>
 
             <div className="result-grid">
               {insights.strengths.map((domain) => (
                 <div key={`strength-${domain.key}`} className="result-item strength">
                   <div className="result-item-label">Stronger area</div>
-                  <div className="result-item-text">
-                    {domain.label}: {domain.score}/100
-                  </div>
+                  <div className="result-item-text">{domain.label}: {domain.score}/100</div>
                 </div>
               ))}
               {insights.priorities.map((domain) => (
                 <div key={`priority-${domain.key}`} className="result-item risk">
                   <div className="result-item-label">Priority area</div>
-                  <div className="result-item-text">
-                    {domain.label}: {domain.score}/100
-                  </div>
+                  <div className="result-item-text">{domain.label}: {domain.score}/100</div>
                 </div>
               ))}
             </div>
 
-            <div className="tip-box">
-              <div className="tip-label">How scoring works</div>
-              <div className="tip-text">
-                Sleep, movement, and social energy score directly. Screen exposure is reverse-scored
-                because more late-evening screen time is treated as a weaker protective habit.
-              </div>
-            </div>
-
             <div className="disclaimer">
-              BrainBoost provides lifestyle awareness only. It is not a medical, psychological, or
-              diagnostic assessment.
+              BrainBoost provides lifestyle awareness only. It is not a medical, psychological, or diagnostic assessment.
             </div>
 
             <div className="ob-footer">
-              <button type="button" className="btn-back" onClick={prevStep}>
-                Back
-              </button>
-              <button type="button" className="btn-next" onClick={handleGoToDashboard}>
-                Go to my dashboard
-              </button>
+              <button type="button" className="btn-back" onClick={prevStep}>Back</button>
+              <button type="button" className="btn-next" onClick={handleGoToDashboard}>Go to my dashboard</button>
             </div>
           </div>
         )}
