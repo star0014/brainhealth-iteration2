@@ -15,10 +15,10 @@ import { calculateSnapshotFromResponses } from '../utils/scoring'
 // ─────────────────────────────────────────────────────────────────────────────
 // Emoji icons displayed next to each domain score bar
 const DOMAIN_ICONS = {
-  sleep_rhythm:     '🌙',
-  move_mode:        '🏃',
-  cognitive_strain: '🧠',
-  social_energy:    '🤝',
+  sleep_rhythm:     '',
+  move_mode:        '',
+  cognitive_strain: '',
+  social_energy:    '',
 }
 
 // Actionable tips for each domain risk area

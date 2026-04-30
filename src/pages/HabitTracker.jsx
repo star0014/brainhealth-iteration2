@@ -3,7 +3,7 @@ import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import './HabitTracker.css'
 
-const API = 'http://localhost:3001/api'
+const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 const LS_KEY = 'bb_guest_habits'
 
 const isGuest = () => localStorage.getItem('bb_is_guest') === 'true'

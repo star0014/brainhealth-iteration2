@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
 
-const API = 'http://localhost:3001/api'
+const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 const ICONS = ['🧠', '⚡', '🎯', '🔥', '💡', '🌙', '⭐', '🎮']
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5) }
