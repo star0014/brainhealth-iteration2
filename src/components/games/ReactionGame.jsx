@@ -2,20 +2,18 @@ import { useState, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
 
-const API = 'https://brainhealth-iteration2-production.up.railway.app/api'
+const API = 'http://localhost:3001/api'
 const STATES = { WAITING: 'waiting', READY: 'ready', GO: 'go', RESULT: 'result', TOOSOON: 'toosoon' }
 
 const OtherGames = ({ onBack }) => (
   <div className="other-games">
-    <div className="other-games-label">Try another game</div>
+    <div className="other-games-label">Try more games</div>
     <div className="other-games-row">
       <button className="other-game-btn" onClick={onBack}>
-        <span className="other-game-icon">🧠</span>
         <span className="other-game-name">Memory Match</span>
         <span className="other-game-sub">Working Memory</span>
       </button>
       <button className="other-game-btn" onClick={onBack}>
-        <span className="other-game-icon">🎨</span>
         <span className="other-game-name">Stroop Test</span>
         <span className="other-game-sub">Attention Control</span>
       </button>

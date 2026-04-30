@@ -2,22 +2,20 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
 
-const API = 'https://brainhealth-iteration2-production.up.railway.app/api'
+const API = 'http://localhost:3001/api'
 const ICONS = ['🧠', '⚡', '🎯', '🔥', '💡', '🌙', '⭐', '🎮']
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5) }
 
 const OtherGames = ({ onBack }) => (
   <div className="other-games">
-    <div className="other-games-label">Try another game</div>
+    <div className="other-games-label">Try more games</div>
     <div className="other-games-row">
       <button className="other-game-btn" onClick={onBack}>
-        <span className="other-game-icon">⚡</span>
         <span className="other-game-name">Reaction Test</span>
         <span className="other-game-sub">Processing Speed</span>
       </button>
       <button className="other-game-btn" onClick={onBack}>
-        <span className="other-game-icon">🎨</span>
         <span className="other-game-name">Stroop Test</span>
         <span className="other-game-sub">Attention Control</span>
       </button>

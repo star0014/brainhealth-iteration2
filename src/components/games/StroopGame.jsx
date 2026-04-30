@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
 
-const API = 'https://brainhealth-iteration2-production.up.railway.app/api'
+const API = 'http://localhost:3001/api'
 
 const COLORS = [
   { name: 'RED',    hex: '#ef4444', bg: '#fef2f2' },
@@ -25,15 +25,13 @@ function generateRound() {
 
 const OtherGames = ({ onBack }) => (
   <div className="other-games">
-    <div className="other-games-label">Try another game</div>
+    <div className="other-games-label">Try more games</div>
     <div className="other-games-row">
       <button className="other-game-btn" onClick={onBack} data-color="#2563eb">
-        <span className="other-game-icon">⚡</span>
         <span className="other-game-name">Reaction Test</span>
         <span className="other-game-sub">Processing Speed</span>
       </button>
       <button className="other-game-btn" onClick={onBack} data-color="#7c3aed">
-        <span className="other-game-icon">🧠</span>
         <span className="other-game-name">Memory Match</span>
         <span className="other-game-sub">Working Memory</span>
       </button>
