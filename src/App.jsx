@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { SignedIn, SignedOut, RedirectToSignIn, useUser } from '@clerk/clerk-react'
+import { useEffect } from 'react'
 import Navbar from './components/Navbar'
 import GuestBanner from './components/GuestBanner'
 import Home from './pages/Home'
@@ -15,6 +16,21 @@ const isGuestUser = () => localStorage.getItem('bb_is_guest') === 'true'
 const guestHasOnboarded = () => {
   const snapshot = getSnapshot()
   return hasCompletedOnboarding(snapshot)
+}
+
+// Clears all guest localStorage data when a real user signs in
+function ClearGuestDataOnSignIn() {
+  const { isSignedIn, user } = useUser()
+  useEffect(() => {
+    if (isSignedIn && user) {
+      localStorage.removeItem('bb_is_guest')
+      localStorage.removeItem('bb_guest_habits')
+      localStorage.removeItem('bb_total_checkins')
+      localStorage.removeItem('bb_guest_id')
+      // Keep brainboostSnapshot so onboarding answers are preserved
+    }
+  }, [isSignedIn, user?.id])
+  return null
 }
 
 function RequireAuth({ children }) {
@@ -48,6 +64,7 @@ function OnboardingRoute() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ClearGuestDataOnSignIn />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/onboarding" element={<OnboardingRoute />} />
