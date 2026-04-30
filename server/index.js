@@ -5,7 +5,12 @@ import habitRoutes from './routes/habits.js'
 import gameRoutes from './routes/games.js'
 
 const app = express()
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://iteration2.ta31brainboost.me'
+  ]
+}))
 app.use(express.json())
 app.use('/api/habits', habitRoutes)
 app.use('/api/games', gameRoutes)

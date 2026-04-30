@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
 
-const API = 'http://localhost:3001/api'
+const API = 'brainhealth-iteration2-production.up.railway.app'
 const STATES = { WAITING: 'waiting', READY: 'ready', GO: 'go', RESULT: 'result', TOOSOON: 'toosoon' }
 
 const OtherGames = ({ onBack }) => (

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
 
-const API = 'http://localhost:3001/api'
+const API = 'brainhealth-iteration2-production.up.railway.app'
 
 const COLORS = [
   { name: 'RED',    hex: '#ef4444', bg: '#fef2f2' },
