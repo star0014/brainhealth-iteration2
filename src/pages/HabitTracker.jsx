@@ -163,7 +163,7 @@ function HabitTracker() {
       {/* Guest nudge banner */}
       {guest && (
         <div className="ht-guest-banner">
-          <span>🔒 You're in guest mode — your data is saved on this device only.</span>
+          <span>You're in guest mode — your data is saved on this device only.</span>
           <SignUpButton mode="modal">
             <button className="ht-guest-cta">Sign up free to sync across devices →</button>
           </SignUpButton>

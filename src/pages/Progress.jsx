@@ -3,7 +3,7 @@ import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import './Progress.css'
 import MilestoneBanner from '../components/MilestoneBanner'
 
-const API = 'https://brainhealth-iteration2-production.up.railway.app/api'
+const API = 'http://localhost:3001/api'
 
 // ── Guest localStorage helpers ──────────────────────────────────────────────
 const isGuest = () => localStorage.getItem('bb_is_guest') === 'true'
@@ -121,7 +121,7 @@ function Progress() {
       {newMilestone && <MilestoneBanner milestone={newMilestone} onClose={() => setNewMilestone(null)} />}
       {isGuest() && (
         <div className="ht-guest-banner">
-          <span>🔒 You're in guest mode — your data is saved on this device only.</span>
+          <span>You're in guest mode — your data is saved on this device only.</span>
           <SignUpButton mode="modal">
             <button className="ht-guest-cta">Sign up free to sync across devices →</button>
           </SignUpButton>
@@ -227,7 +227,7 @@ function Progress() {
                   )}
                 </div>
                 <div className="milestone-info">
-                  <div className="milestone-label" style={{ color: unlocked ? m.color : '#94a3b8' }}>{m.label}</div>
+                  <div className="milestone-label" style={{ color: unlocked ? m.color : '#4f46e5' }}>{m.label}</div>
                   <div className="milestone-desc">{unlocked ? m.desc : `Check in for ${m.days} days`}</div>
                 </div>
                 {unlocked && <div className="milestone-badge" style={{ background: m.color }}>Unlocked</div>}
