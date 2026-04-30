@@ -297,7 +297,7 @@
 
 .pet-stat-row {
   display: grid;
-  grid-template-columns: 100px 1fr 44px 90px;
+  grid-template-columns: 90px 1fr 36px 100px;
   align-items: center;
   gap: 12px;
 }
@@ -626,4 +626,33 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── pet-middle and pet-vitals layout ── */
+.pet-middle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 2rem;
+  border-right: 1px solid rgba(74, 158, 219, 0.12);
+}
+
+.pet-vitals {
+  flex: 1.1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  padding-left: 2rem;
+}
+
+.pet-vitals-heading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #374151;
+  margin-bottom: 2px;
 }

@@ -308,16 +308,13 @@ function HabitTracker() {
                   </div>
                   <div className="ht-history-stats">
                     <div className="ht-stat">
-                      <span className="ht-stat-label">Sleep</span>
-                      <span className="ht-stat-value">{h.sleep_hours} hrs</span>
+                      <span className="ht-stat-value">{h.sleep_hours} hrs sleep</span>
                     </div>
                     <div className="ht-stat">
-                      <span className="ht-stat-label">Screen</span>
-                      <span className="ht-stat-value">{h.screen_time}</span>
+                      <span className="ht-stat-value">{h.screen_time} screen</span>
                     </div>
                     <div className="ht-stat">
-                      <span className="ht-stat-label">Activity</span>
-                      <span className={`ht-stat-value ${h.physical_activity ? 'green' : 'gray'}`}>
+                      <span className={`ht-stat-value ${h.physical_activity ? 'active' : 'inactive'}`}>
                         {h.physical_activity ? 'Active' : 'Rest day'}
                       </span>
                     </div>
