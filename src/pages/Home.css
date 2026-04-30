@@ -272,7 +272,7 @@
   letter-spacing: 0;
 }
 
-.stat-desc { font-size: 15px; color: #94a3b8; font-weight: 500; }
+.stat-desc { font-size: 15px; color: #1e293b; font-weight: 500; }
 .stat-divider { display: none; }
 
 /* ── How it works ── */
@@ -330,7 +330,7 @@
   letter-spacing: 0;
 }
 .step-t { font-size: 22px; font-weight: 700; color: #0d1b2a; margin-bottom: 10px; letter-spacing: -0.4px; }
-.step-d { font-size: 17px; color: #64748b; line-height: 1.6; }
+.step-d { font-size: 17px; color: #374151; line-height: 1.6; }
 
 /* ── Final CTA ── */
 .final-cta {
@@ -377,7 +377,7 @@
   padding: 30px 60px;
   border-top: 1px solid rgba(37,99,235,0.1);
 }
-.home-footer p { font-size: 12px; color: #94a3b8; }
+.home-footer p { font-size: 12px; color: #1e293b; }
 
 /* ── Responsive ── */
 @media (max-width: 900px) {

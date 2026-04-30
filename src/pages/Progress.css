@@ -1,12 +1,12 @@
 .progress-page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; font-family: 'Inter', sans-serif; }
 
-.progress-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px; gap: 16px; color: #64748b; }
+.progress-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px; gap: 16px; color: #374151; }
 .progress-spinner { width: 36px; height: 36px; border: 3px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .progress-hero { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #eff6ff, #f0f9ff); border-radius: 20px; padding: 32px 40px; border: 1px solid #dbeafe; margin-bottom: 28px; }
 .progress-hero-text h1 { font-size: 32px; font-weight: 700; color: #0d1b2a; margin-bottom: 8px; letter-spacing: -0.5px; }
-.progress-hero-text p { font-size: 15px; color: #64748b; line-height: 1.6; }
+.progress-hero-text p { font-size: 17px; color: #374151; line-height: 1.6; }
 .progress-hero-visual { animation: float 6s ease-in-out infinite; }
 @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
@@ -21,14 +21,14 @@
 .trophy .stat-icon { background: #fffbeb; }
 
 .stat-number { font-size: 28px; font-weight: 700; color: #0d1b2a; letter-spacing: -1px; }
-.stat-label { font-size: 12px; color: #94a3b8; font-weight: 500; margin-top: 2px; }
+.stat-label { font-size: 14px; color: #1e293b; font-weight: 600; font-weight: 500; margin-top: 2px; }
 
 .progress-next { background: white; border: 1px solid #dbeafe; border-radius: 16px; padding: 24px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-.progress-next-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; color: #475569; }
+.progress-next-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 16px; color: #1e293b; }
 .progress-next-header strong { color: #2563eb; }
 .progress-bar-bg { background: #e2e8f0; border-radius: 50px; height: 10px; overflow: hidden; margin-bottom: 10px; }
 .progress-bar-fill { background: linear-gradient(90deg, #2563eb, #60a5fa); height: 100%; border-radius: 50px; transition: width 0.8s ease; }
-.progress-next p { font-size: 13px; color: #64748b; }
+.progress-next p { font-size: 15px; color: #374151; }
 
 .milestones-section { margin-bottom: 32px; }
 .milestones-section h2 { font-size: 20px; font-weight: 700; color: #0d1b2a; margin-bottom: 16px; letter-spacing: -0.3px; }
@@ -44,7 +44,7 @@
 .milestone-card.locked .milestone-icon { background: #f8fafc; }
 
 .milestone-label { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
-.milestone-desc { font-size: 12px; color: #64748b; }
+.milestone-desc { font-size: 14px; color: #374151; }
 .milestone-badge { margin-left: auto; padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 600; color: white; white-space: nowrap; }
 
 .recent-section h2 { font-size: 20px; font-weight: 700; color: #0d1b2a; margin-bottom: 16px; letter-spacing: -0.3px; }
@@ -53,7 +53,7 @@
 .recent-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .recent-date { font-size: 14px; font-weight: 600; color: #0d1b2a; min-width: 110px; }
 .recent-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.recent-tag { background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 500; }
+.recent-tag { background: #f1f5f9; color: #1e293b; padding: 4px 10px; border-radius: 50px; font-size: 14px; font-weight: 500; }
 .recent-tag.green { background: #f0fdf4; color: #16a34a; }
 
 .games-section { margin-bottom: 32px; }
@@ -63,36 +63,7 @@
 .game-score-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .game-score-info { flex: 1; }
 .game-score-name { font-size: 14px; font-weight: 600; color: #0d1b2a; }
-.game-score-date { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+.game-score-date { font-size: 14px; color: #1e293b; font-weight: 500; margin-top: 2px; }
 .game-score-result { text-align: right; }
 .game-score-num { font-size: 16px; font-weight: 700; color: #0d1b2a; }
 .game-score-rating { font-size: 12px; font-weight: 600; margin-top: 2px; }
-
-/* ── Guest banner (shared with HabitTracker) ── */
-.ht-guest-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 12px;
-  padding: 12px 18px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #1e40af;
-  flex-wrap: wrap;
-}
-.ht-guest-cta {
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
-}
-.ht-guest-cta:hover { background: #1d4ed8; transform: translateY(-1px); }
