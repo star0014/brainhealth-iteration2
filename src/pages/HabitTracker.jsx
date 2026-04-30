@@ -266,7 +266,7 @@ function HabitTracker() {
                     <Tooltip formatter={(v) => v ? [`${v} hrs`, 'Sleep'] : ['No data', 'Sleep']} contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13 }}/>
                     <Bar dataKey="sleep" radius={[6, 6, 0, 0]}>
                       {chartData.map((entry, i) => (
-                        <Cell key={i} fill={entry.hasData ? '#2563eb' : '#e2e8f0'} fillOpacity={entry.hasData ? 1 : 0.5}/>
+                        <Cell key={i} fill={entry.hasData ? '#2563eb' : '#bfdbfe'} fillOpacity={entry.hasData ? 1 : 0.7}/>
                       ))}
                     </Bar>
                   </BarChart>
@@ -282,7 +282,7 @@ function HabitTracker() {
                     <Tooltip formatter={(v, n, p) => p.payload.hasData ? [p.payload.wasActive ? 'Active' : 'Rest day', 'Activity'] : ['No data', 'Activity']} contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13 }}/>
                     <Bar dataKey="active" radius={[6, 6, 0, 0]} minPointSize={4}>
                       {chartData.map((entry, i) => (
-                        <Cell key={i} fill={!entry.hasData ? '#e2e8f0' : entry.wasActive ? '#16a34a' : '#fca5a5'} fillOpacity={entry.hasData ? 1 : 0.5}/>
+                        <Cell key={i} fill={!entry.hasData ? '#bfdbfe' : entry.wasActive ? '#16a34a' : '#fca5a5'} fillOpacity={entry.hasData ? 1 : 0.5}/>
                       ))}
                     </Bar>
                   </BarChart>
@@ -290,7 +290,7 @@ function HabitTracker() {
                 <div className="ht-chart-legend">
                   <span><span className="legend-dot" style={{background:'#16a34a'}}/> Active</span>
                   <span><span className="legend-dot" style={{background:'#fca5a5'}}/> Rest day</span>
-                  <span><span className="legend-dot" style={{background:'#e2e8f0'}}/> No data</span>
+                  <span><span className="legend-dot" style={{background:'#bfdbfe'}}/> No data</span>
                 </div>
               </div>
             </>
