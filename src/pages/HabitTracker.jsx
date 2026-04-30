@@ -261,8 +261,8 @@ function HabitTracker() {
                 <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={chartData} barSize={historyRange === 7 ? 28 : 12}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false}/>
-                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false}/>
-                    <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={24}/>
+                    <XAxis dataKey="date" tick={{ fontSize: 13, fill: '#374151', fontWeight: 500 }} axisLine={false} tickLine={false}/>
+                    <YAxis domain={[0, 10]} tick={{ fontSize: 13, fill: '#374151', fontWeight: 500 }} axisLine={false} tickLine={false} width={24}/>
                     <Tooltip formatter={(v) => v ? [`${v} hrs`, 'Sleep'] : ['No data', 'Sleep']} contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13 }}/>
                     <Bar dataKey="sleep" radius={[6, 6, 0, 0]}>
                       {chartData.map((entry, i) => (
@@ -278,7 +278,7 @@ function HabitTracker() {
                 <ResponsiveContainer width="100%" height={120}>
                   <BarChart data={chartData} barSize={historyRange === 7 ? 28 : 12}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false}/>
-                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false}/>
+                    <XAxis dataKey="date" tick={{ fontSize: 13, fill: '#374151', fontWeight: 500 }} axisLine={false} tickLine={false}/>
                     <Tooltip formatter={(v, n, p) => p.payload.hasData ? [p.payload.wasActive ? 'Active' : 'Rest day', 'Activity'] : ['No data', 'Activity']} contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13 }}/>
                     <Bar dataKey="active" radius={[6, 6, 0, 0]} minPointSize={4}>
                       {chartData.map((entry, i) => (
