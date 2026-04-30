@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { SignedIn, SignedOut, RedirectToSignIn, useUser } from '@clerk/clerk-react'
+import { SignedIn, SignedOut, RedirectToSignIn, useUser, useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import Navbar from './components/Navbar'
 import GuestBanner from './components/GuestBanner'
@@ -18,18 +18,66 @@ const guestHasOnboarded = () => {
   return hasCompletedOnboarding(snapshot)
 }
 
-// Clears all guest localStorage data when a real user signs in
-function ClearGuestDataOnSignIn() {
+const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+const LS_HABITS = 'bb_guest_habits'
+const LS_MIGRATED = 'bb_migrated_user' // tracks which user ID has already been migrated
+
+function HandleAuthTransition() {
   const { isSignedIn, user } = useUser()
+  const { getToken } = useAuth()
+
   useEffect(() => {
-    if (isSignedIn && user) {
+    if (!isSignedIn || !user) return
+
+    const userId = user.id
+    const alreadyMigrated = localStorage.getItem(LS_MIGRATED) === userId
+    const guestHabits = JSON.parse(localStorage.getItem(LS_HABITS) || '[]')
+
+    if (alreadyMigrated) {
+      // This user was already migrated — just clear guest flag silently
       localStorage.removeItem('bb_is_guest')
-      localStorage.removeItem('bb_guest_habits')
+      return
+    }
+
+    if (guestHabits.length > 0) {
+      // Option B: guest has history → migrate it to their account then wipe
+      ;(async () => {
+        try {
+          const token = await getToken()
+          // Post each guest habit to the API
+          for (const habit of guestHabits) {
+            await fetch(`${API}/habits`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                sleep_hours: habit.sleep_hours,
+                screen_time: habit.screen_time,
+                physical_activity: habit.physical_activity,
+                date: habit.date
+              })
+            })
+          }
+          // Mark this user as migrated and wipe guest data
+          localStorage.setItem(LS_MIGRATED, userId)
+          localStorage.removeItem('bb_is_guest')
+          localStorage.removeItem(LS_HABITS)
+          localStorage.removeItem('bb_total_checkins')
+          localStorage.removeItem('bb_guest_id')
+        } catch (err) {
+          console.error('Migration failed:', err)
+          // Still clear guest flag even if migration fails
+          localStorage.removeItem('bb_is_guest')
+        }
+      })()
+    } else {
+      // Option A: no guest history → just clear guest flag, show account history
+      localStorage.removeItem('bb_is_guest')
       localStorage.removeItem('bb_total_checkins')
       localStorage.removeItem('bb_guest_id')
-      // Keep brainboostSnapshot so onboarding answers are preserved
+      // Guest habits stay untouched (empty anyway)
     }
   }, [isSignedIn, user?.id])
+
   return null
 }
 
@@ -64,7 +112,7 @@ function OnboardingRoute() {
 export default function App() {
   return (
     <BrowserRouter>
-      <ClearGuestDataOnSignIn />
+      <HandleAuthTransition />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/onboarding" element={<OnboardingRoute />} />
