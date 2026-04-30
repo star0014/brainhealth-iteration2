@@ -3,7 +3,7 @@ import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import './Progress.css'
 import MilestoneBanner from '../components/MilestoneBanner'
 
-const API = 'brainhealth-iteration2-production.up.railway.app'
+const API = 'https://brainhealth-iteration2-production.up.railway.app/api'
 
 // ── Guest localStorage helpers ──────────────────────────────────────────────
 const isGuest = () => localStorage.getItem('bb_is_guest') === 'true'
