@@ -3,12 +3,17 @@
 // domain score cards, priority alerts, standout summary, article picks, and benchmark charts.
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, Navigate } from 'react-router-dom'
+import { useAuth } from '@clerk/clerk-react'
 import './Dashboard.css'
 import { ARTICLES } from '../data/articles'
 import { getRecommendedArticles } from '../utils/recommendations'
 import SleepDurationChart from '../components/SleepDurationChart'
 import PhysicalActivityChart from '../components/PhysicalActivityChart'
-import { calculateSnapshotFromResponses } from '../utils/scoring'
+import { calculateSnapshotFromResponses, calculateSnapshotFromCheckin } from '../utils/scoring'
+
+const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
+const LS_KEY = 'bb_guest_habits'
+const isGuest = () => localStorage.getItem('bb_is_guest') === 'true'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
@@ -503,44 +508,80 @@ function BrainPet({ petState, onPoke, isPoking }) {
 // ─────────────────────────────────────────────────────────────────────────────
 function Dashboard() {
   const location = useLocation()
+  const { getToken } = useAuth()
 
-  // Try to read the snapshot from localStorage (persisted after onboarding)
   const storedSnapshot = localStorage.getItem('brainboostSnapshot')
   let parsedSnapshot = null
-
   if (storedSnapshot) {
-    try {
-      parsedSnapshot = JSON.parse(storedSnapshot)
-    } catch {
-      // Ignore malformed data — falls through to null
-      parsedSnapshot = null
-    }
+    try { parsedSnapshot = JSON.parse(storedSnapshot) } catch { parsedSnapshot = null }
   }
-
   const baseSnapshot = location.state ?? parsedSnapshot
 
-  const [dismissedWarnings, setDismissedWarnings] = useState([])  // keys of dismissed alert cards
-  const [expandedCard, setExpandedCard] = useState(null)  // which standout card is expanded
-  const [showHistory,       setShowHistory]        = useState(false) // toggle for dismissed list
-  const [isPoking,          setIsPoking]           = useState(false) // prevents rapid repeat pokes
-  const [pokeMessage,       setPokeMessage]        = useState(null)  // temporary poke response text
+  const [dismissedWarnings, setDismissedWarnings] = useState([])
+  const [expandedCard,      setExpandedCard]       = useState(null)
+  const [showHistory,       setShowHistory]        = useState(false)
+  const [isPoking,          setIsPoking]           = useState(false)
+  const [pokeMessage,       setPokeMessage]        = useState(null)
+  const [todayCheckin,      setTodayCheckin]       = useState(null)
+  const [checkinLoaded,     setCheckinLoaded]      = useState(false)
+  const [showCheckinPrompt, setShowCheckinPrompt]  = useState(false)
 
-  // If there is no snapshot at all, redirect back to onboarding
+  const todayStr = new Date().toLocaleDateString('en-CA')
+
+  useEffect(() => {
+    async function loadTodayCheckin() {
+      if (isGuest()) {
+        try {
+          const habits = JSON.parse(localStorage.getItem(LS_KEY) || '[]')
+          const found = habits.find(h => h.date === todayStr)
+          setTodayCheckin(found || null)
+          if (!found) setShowCheckinPrompt(true)
+        } catch { setTodayCheckin(null); setShowCheckinPrompt(true) }
+        setCheckinLoaded(true)
+        return
+      }
+      try {
+        const token = await getToken()
+        if (!token) { setCheckinLoaded(true); return }
+        const res = await fetch(`${API}/habits`, { headers: { Authorization: `Bearer ${token}` } })
+        const data = await res.json()
+        if (Array.isArray(data)) {
+          const found = data.find(h => new Date(h.date).toLocaleDateString('en-CA') === todayStr)
+          setTodayCheckin(found || null)
+          if (!found) setShowCheckinPrompt(true)
+        }
+      } catch (err) { console.error(err) }
+      setCheckinLoaded(true)
+    }
+    loadTodayCheckin()
+  }, [])
+
   if (!baseSnapshot) return <Navigate to="/onboarding" replace />
 
-  // Re-run scoring from raw responses so the displayed values stay in sync with scoring.js
-  const scoringInput     = baseSnapshot.questionnaireResponses ?? baseSnapshot.responses
-  const recomputedScoring = calculateSnapshotFromResponses(scoringInput)
+  // Use today's check-in for scoring if available, otherwise fall back to onboarding responses
+  const scoringInput      = baseSnapshot.questionnaireResponses ?? baseSnapshot.responses
+  const onboardingScoring = calculateSnapshotFromResponses(scoringInput)
 
-  // Merge recomputed scores on top of the base snapshot (overrides any stale cached values)
-  const snapshot = recomputedScoring
-    ? {
-        ...baseSnapshot,
-        overallScore:          recomputedScoring.overallScore,
-        overallInterpretation: recomputedScoring.overallInterpretation,
-        domainScores:          recomputedScoring.domainScoresLegacy,
-      }
-    : baseSnapshot
+  // Get social score from onboarding Q4 to carry into check-in scoring
+  const socialScore = onboardingScoring
+    ? onboardingScoring.domainScoresLegacy.find(d => d.key === 'social_energy')?.score ?? 60
+    : 60
+
+  // If we have today's check-in, use it for the live score; otherwise use onboarding
+  const checkinScoring = todayCheckin
+    ? calculateSnapshotFromCheckin(todayCheckin, socialScore)
+    : null
+
+  const snapshot = checkinScoring
+    ? { ...baseSnapshot, ...checkinScoring }
+    : onboardingScoring
+      ? {
+          ...baseSnapshot,
+          overallScore:          onboardingScoring.overallScore,
+          overallInterpretation: onboardingScoring.overallInterpretation,
+          domainScores:          onboardingScoring.domainScoresLegacy,
+        }
+      : baseSnapshot
 
   const petState  = getPetState(snapshot)
   const petSpeech = getPetSpeech(snapshot)
@@ -576,6 +617,26 @@ function Dashboard() {
   return (
     <div className="dash-wrap">
       <NeuralBackground />
+
+      {/* ── Check-in prompt modal ──────────────────────────────────────────── */}
+      {showCheckinPrompt && checkinLoaded && (
+        <div className="checkin-prompt-overlay" onClick={() => setShowCheckinPrompt(false)}>
+          <div className="checkin-prompt-box" onClick={e => e.stopPropagation()}>
+            <div className="checkin-prompt-emoji">🧠</div>
+            <div className="checkin-prompt-title">Update your brain score</div>
+            <div className="checkin-prompt-sub">
+              You haven't checked in today yet. Your score is based on your last check-in.
+              Log today's habits to get your latest brain health score.
+            </div>
+            <div className="checkin-prompt-actions">
+              <Link to="/habits" className="checkin-prompt-btn">Go to Habit Tracker →</Link>
+              <button className="checkin-prompt-dismiss" onClick={() => setShowCheckinPrompt(false)}>
+                Use last score
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="dash-header">

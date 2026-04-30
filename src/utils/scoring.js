@@ -99,3 +99,65 @@ export function calculateSnapshotFromResponses(responses) {
     overallInterpretation: interpretScore(overallScore),
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Scoring from daily check-in data
+// Maps check-in field values to 0-100 scores for each domain.
+// Social energy is kept from onboarding (Q4) since check-in doesn't capture it.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Maps sleep_hours string → score (0-100)
+function scoreSleep(sleepHours) {
+  const map = {
+    '< 6': 20,
+    '6':   40,
+    '7':   60,
+    '8':   100,
+    '9+':  80,
+  }
+  return map[sleepHours] ?? 50
+}
+
+// Maps screen_time string → score (reverse: more screen = lower score)
+function scoreScreen(screenTime) {
+  const map = {
+    '< 2h':  100,
+    '2-4h':  80,
+    '4-6h':  60,
+    '6-8h':  40,
+    '8h+':   20,
+  }
+  return map[screenTime] ?? 50
+}
+
+// Maps physical_activity boolean → score
+function scoreActivity(physicalActivity) {
+  return physicalActivity ? 100 : 40
+}
+
+// Main function: takes today's check-in habit object + social score from onboarding
+// Returns a snapshot-shaped object compatible with the Dashboard component
+export function calculateSnapshotFromCheckin(habit, socialScore = 60) {
+  if (!habit) return null
+
+  const sleepScore    = scoreSleep(habit.sleep_hours)
+  const screenScore   = scoreScreen(habit.screen_time)
+  const activityScore = scoreActivity(habit.physical_activity)
+
+  const domainScores = [
+    { key: 'sleep_rhythm',    label: 'Sleep Rhythm',    score: sleepScore },
+    { key: 'move_mode',       label: 'Move Mode',       score: activityScore },
+    { key: 'cognitive_strain',label: 'Cognitive Strain',score: screenScore },
+    { key: 'social_energy',   label: 'Social Energy',   score: socialScore },
+  ]
+
+  const overallScore = Math.round(
+    domainScores.reduce((sum, d) => sum + d.score, 0) / domainScores.length
+  )
+
+  return {
+    overallScore,
+    overallInterpretation: interpretScore(overallScore),
+    domainScores,
+  }
+}
