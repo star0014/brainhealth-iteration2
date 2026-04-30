@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { UserButton } from '@clerk/clerk-react'
+import { UserButton, useUser } from '@clerk/clerk-react'
 import './Navbar.css'
 import { getSnapshot, hasCompletedOnboarding } from '../utils/recommendations'
 
@@ -10,6 +10,8 @@ function Navbar() {
 
   const isGuest = localStorage.getItem('bb_is_guest') === 'true'
   const guestDone = isGuest && canAccessProtectedPages
+  const { isSignedIn } = useUser()
+  const hideOnboarding = guestDone || isSignedIn
 
   return (
     <nav className="navbar">
@@ -23,7 +25,7 @@ function Navbar() {
         </Link>
       </div>
       <div className="navbar-tabs">
-        {!guestDone && (
+        {!hideOnboarding && (
           <Link to="/onboarding" className={`nav-tab ${location.pathname === '/onboarding' ? 'active' : ''}`}>Onboarding</Link>
         )}
         <Link to={canAccessProtectedPages ? '/dashboard' : '/onboarding'} className={`nav-tab ${location.pathname === '/dashboard' ? 'active' : ''}`}>Dashboard</Link>
