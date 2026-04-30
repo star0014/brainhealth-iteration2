@@ -7,6 +7,24 @@ const ICONS = ['🧠', '⚡', '🎯', '🔥', '💡', '🌙', '⭐', '🎮']
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5) }
 
+const OtherGames = ({ onBack }) => (
+  <div className="other-games">
+    <div className="other-games-label">Try another game</div>
+    <div className="other-games-row">
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-icon">⚡</span>
+        <span className="other-game-name">Reaction Test</span>
+        <span className="other-game-sub">Processing Speed</span>
+      </button>
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-icon">🎨</span>
+        <span className="other-game-name">Stroop Test</span>
+        <span className="other-game-sub">Attention Control</span>
+      </button>
+    </div>
+  </div>
+)
+
 function createCards() {
   return shuffle([...ICONS, ...ICONS]).map((icon, i) => ({ id: i, icon, flipped: false, matched: false }))
 }
@@ -149,6 +167,7 @@ function MemoryGame({ onBack }) {
           </div>
         </div>
       )}
+      <OtherGames onBack={onBack} />
     </div>
   )
 }

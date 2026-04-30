@@ -5,6 +5,24 @@ import './Game.css'
 const API = 'http://localhost:3001/api'
 const STATES = { WAITING: 'waiting', READY: 'ready', GO: 'go', RESULT: 'result', TOOSOON: 'toosoon' }
 
+const OtherGames = ({ onBack }) => (
+  <div className="other-games">
+    <div className="other-games-label">Try another game</div>
+    <div className="other-games-row">
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-icon">🧠</span>
+        <span className="other-game-name">Memory Match</span>
+        <span className="other-game-sub">Working Memory</span>
+      </button>
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-icon">🎨</span>
+        <span className="other-game-name">Stroop Test</span>
+        <span className="other-game-sub">Attention Control</span>
+      </button>
+    </div>
+  </div>
+)
+
 function ReactionGame({ onBack }) {
   const { getToken } = useAuth()
   const [state, setState] = useState(STATES.WAITING)
@@ -160,6 +178,7 @@ function ReactionGame({ onBack }) {
           </div>
         </div>
       )}
+      <OtherGames onBack={onBack} />
     </div>
   )
 }
