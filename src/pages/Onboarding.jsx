@@ -10,7 +10,7 @@ const QUESTIONNAIRE_STEPS = [
     title: 'Sleep Rhythm',
     emoji: '🌙',
     vibe: 'How are you actually sleeping?',
-    description: 'No judgment — just tell us what a typical night looks like.',
+    description: 'Tell us what a typical night looks like.',
     accent: '#4A9EDB',
     accentBg: 'linear-gradient(135deg, #e0f0ff 0%, #c8e4f8 100%)',
     question: {
@@ -31,7 +31,7 @@ const QUESTIONNAIRE_STEPS = [
     title: 'Move Mode',
     emoji: '⚡',
     vibe: 'How much do you actually move?',
-    description: 'Be real — we want your actual week, not your best week.',
+    description: 'We want your actual week, not your best week.',
     accent: '#1D9E75',
     accentBg: 'linear-gradient(135deg, #dcf5ec 0%, #b8ecd8 100%)',
     question: {
@@ -52,7 +52,7 @@ const QUESTIONNAIRE_STEPS = [
     title: 'Screen Exposure',
     emoji: '📱',
     vibe: 'How much late-night scrolling?',
-    description: "Late-evening screen time hits different for your brain — let's check in.",
+    description: "What's your Late-evening screen time? let's check in.",
     accent: '#D97855',
     accentBg: 'linear-gradient(135deg, #fef3e0 0%, #fde4b8 100%)',
     question: {
@@ -73,7 +73,7 @@ const QUESTIONNAIRE_STEPS = [
     title: 'Social Energy',
     emoji: '🤝',
     vibe: 'Feeling connected lately?',
-    description: 'Real connection, not just being online. How plugged in do you feel?',
+    description: 'How plugged in do you feel?',
     accent: '#9B59B6',
     accentBg: 'linear-gradient(135deg, #f3e8ff 0%, #e8d5ff 100%)',
     question: {
