@@ -3,7 +3,7 @@ import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import './HabitTracker.css'
 
-const API = 'https://brainhealth-iteration2-production.up.railway.app/api'
+const API = 'http://localhost:3001/api'
 const LS_KEY = 'bb_guest_habits'
 
 const isGuest = () => localStorage.getItem('bb_is_guest') === 'true'
@@ -137,8 +137,9 @@ function HabitTracker() {
       result.push({
         date: d.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric' }),
         sleep: habit ? sleepToNum(habit.sleep_hours) : null,
-        active: habit ? (habit.physical_activity ? 1 : 0) : null,
-        hasData: !!habit
+        active: habit ? (habit.physical_activity ? 1 : 0.15) : null,
+        hasData: !!habit,
+        wasActive: habit ? habit.physical_activity : false
       })
     }
     return result
@@ -278,10 +279,10 @@ function HabitTracker() {
                   <BarChart data={chartData} barSize={historyRange === 7 ? 28 : 12}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false}/>
                     <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false}/>
-                    <Tooltip formatter={(v, n, p) => p.payload.hasData ? [v === 1 ? 'Active' : 'Rest day', 'Activity'] : ['No data', 'Activity']} contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13 }}/>
-                    <Bar dataKey="active" radius={[6, 6, 0, 0]}>
+                    <Tooltip formatter={(v, n, p) => p.payload.hasData ? [p.payload.wasActive ? 'Active' : 'Rest day', 'Activity'] : ['No data', 'Activity']} contentStyle={{ borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13 }}/>
+                    <Bar dataKey="active" radius={[6, 6, 0, 0]} minPointSize={4}>
                       {chartData.map((entry, i) => (
-                        <Cell key={i} fill={!entry.hasData ? '#e2e8f0' : entry.active ? '#16a34a' : '#fca5a5'} fillOpacity={entry.hasData ? 1 : 0.5}/>
+                        <Cell key={i} fill={!entry.hasData ? '#e2e8f0' : entry.wasActive ? '#16a34a' : '#fca5a5'} fillOpacity={entry.hasData ? 1 : 0.5}/>
                       ))}
                     </Bar>
                   </BarChart>
