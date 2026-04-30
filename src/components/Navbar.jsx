@@ -8,6 +8,9 @@ function Navbar() {
   const snapshot = getSnapshot()
   const canAccessProtectedPages = hasCompletedOnboarding(snapshot)
 
+  const isGuest = localStorage.getItem('bb_is_guest') === 'true'
+  const guestDone = isGuest && canAccessProtectedPages
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -20,7 +23,9 @@ function Navbar() {
         </Link>
       </div>
       <div className="navbar-tabs">
-        <Link to="/onboarding" className={`nav-tab ${location.pathname === '/onboarding' ? 'active' : ''}`}>Onboarding</Link>
+        {!guestDone && (
+          <Link to="/onboarding" className={`nav-tab ${location.pathname === '/onboarding' ? 'active' : ''}`}>Onboarding</Link>
+        )}
         <Link to={canAccessProtectedPages ? '/dashboard' : '/onboarding'} className={`nav-tab ${location.pathname === '/dashboard' ? 'active' : ''}`}>Dashboard</Link>
         <Link to={canAccessProtectedPages ? '/habits' : '/onboarding'} className={`nav-tab ${location.pathname === '/habits' ? 'active' : ''}`}>Habit Tracker</Link>
         <Link to="/games" className={`nav-tab ${location.pathname === '/games' ? 'active' : ''}`}>Mini Games</Link>
