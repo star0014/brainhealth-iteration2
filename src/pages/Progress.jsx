@@ -1,9 +1,34 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import './Progress.css'
 import MilestoneBanner from '../components/MilestoneBanner'
 
 const API = 'http://localhost:3001/api'
+
+// ── Guest localStorage helpers ──────────────────────────────────────────────
+const isGuest = () => localStorage.getItem('bb_is_guest') === 'true'
+const LS_KEY = 'bb_guest_habits'
+
+function guestLoadHabits() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]') } catch { return [] }
+}
+
+function guestComputeStreak(habits) {
+  if (!habits.length) return 0
+  const sorted = [...habits].sort((a, b) => new Date(b.date) - new Date(a.date))
+  const today = new Date().toLocaleDateString('en-CA')
+  let streak = 0
+  let cursor = new Date()
+  for (const h of sorted) {
+    const d = new Date(h.date).toLocaleDateString('en-CA')
+    const expected = cursor.toLocaleDateString('en-CA')
+    if (d === expected || (streak === 0 && d === today)) {
+      streak++
+      cursor.setDate(cursor.getDate() - 1)
+    } else break
+  }
+  return streak
+}
 
 const MILESTONES = [
   { days: 1,  label: 'First Check-in',  desc: 'You showed up — that is how it starts!', color: '#60a5fa' },
@@ -39,6 +64,20 @@ function Progress() {
   useEffect(() => { fetchData() }, [])
 
   async function fetchData() {
+    if (isGuest()) {
+      const habitsData = guestLoadHabits()
+      const computedStreak = guestComputeStreak(habitsData)
+      const computedTotal = habitsData.length
+      setHabits(habitsData)
+      setStreak(computedStreak)
+      setTotal(computedTotal)
+      const prevTotal = parseInt(localStorage.getItem('bb_total_checkins') || '0')
+      const justUnlocked = MILESTONES.filter(m => m.days <= computedTotal && m.days > prevTotal)
+      if (justUnlocked.length > 0) setNewMilestone(justUnlocked[justUnlocked.length - 1])
+      localStorage.setItem('bb_total_checkins', computedTotal)
+      setLoading(false)
+      return
+    }
     try {
       const token = await getToken()
       const headers = { Authorization: `Bearer ${token}` }
@@ -80,6 +119,14 @@ function Progress() {
   return (
     <div className="progress-page">
       {newMilestone && <MilestoneBanner milestone={newMilestone} onClose={() => setNewMilestone(null)} />}
+      {isGuest() && (
+        <div className="ht-guest-banner">
+          <span>🔒 You're in guest mode — your data is saved on this device only.</span>
+          <SignUpButton mode="modal">
+            <button className="ht-guest-cta">Sign up free to sync across devices →</button>
+          </SignUpButton>
+        </div>
+      )}
       <div className="progress-hero">
         <div className="progress-hero-text">
           <h1>Your Progress</h1>
@@ -236,7 +283,7 @@ function Progress() {
               <div key={h.id} className="recent-item">
                 <div className="recent-dot" style={{ background: h.physical_activity ? '#16a34a' : '#94a3b8' }} />
                 <div className="recent-date">
-                  {new Date(h.date).toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' })}
+                  {new Date(h.date + 'T12:00:00').toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </div>
                 <div className="recent-tags">
                   <span className="recent-tag">{h.sleep_hours} hrs sleep</span>
