@@ -274,22 +274,19 @@ function ReactionGame({ onBack }) {
         <div className="reaction-results">
           <h2>Your Results</h2>
           <div className="result-avg">
-            {/* Average reaction time — the primary score metric */}
-            <div className="result-avg-num">{avg}<span>ms</span></div>
-            <div className="result-avg-label">Average Reaction Time</div>
-            <div className="result-rating" style={{ color: getRating(avg).color }}>{getRating(avg).label}</div>
-            <div className="result-desc">{getRating(avg).desc}</div>
+            <div className="result-avg-num">{avg ?? '—'}<span>ms</span></div>
+            <div className="result-avg-label">Average Reaction Time across {TOTAL_ROUNDS} rounds</div>
+            {avg && <div className="result-rating" style={{ color: getRating(avg).color }}>{getRating(avg).label}</div>}
+            {avg && <div className="result-desc">{getRating(avg).desc}</div>}
           </div>
-          {/* Per-round breakdown table */}
           <div className="result-rounds">
             {results.map((r, i) => (
               <div key={i} className="result-round">
                 <span>Round {i + 1}</span>
-                <span style={{ color: getRating(r).color }}>{r}ms — {getRating(r).label}</span>
+                <span style={{ color: getRating(r).color, fontWeight: 600 }}>{r}ms — {getRating(r).label}</span>
               </div>
             ))}
           </div>
-          {/* Confirmation shown only after the API call succeeds */}
           {saved && <div className="result-saved">Score saved to your profile!</div>}
           <div className="result-actions">
             <button className="mg-play-btn" style={{ background: '#2563eb' }} onClick={reset}>Play Again</button>
