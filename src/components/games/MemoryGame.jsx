@@ -251,7 +251,7 @@ function MemoryGame({ onBack }) {
       )}
 
       {/* ── Playing state ── */}
-      {!showIntro && !done ? (
+      {!showIntro && !done && (
         <>
           {/* Move and match counters above the grid */}
           <div className="memory-stats">
