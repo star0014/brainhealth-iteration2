@@ -196,7 +196,7 @@ function MemoryGame({ onBack }) {
       </div>
 
       {/* ── Intro card ── */}
-      {showIntro && (
+      {showIntro && !done && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>

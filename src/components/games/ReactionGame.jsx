@@ -186,7 +186,7 @@ function ReactionGame({ onBack }) {
       {/* ── Active game area ──────────────────────────────────────────────────── */}
       {/* The reaction-box CSS class is extended with the state name to drive background colour:
           .reaction-box.waiting → grey, .reaction-box.go → green, etc. */}
-      {showIntro && (
+      {showIntro && !done && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
