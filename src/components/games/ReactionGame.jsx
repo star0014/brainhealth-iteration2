@@ -270,26 +270,29 @@ function ReactionGame({ onBack }) {
           )}
         </div>
       ) : (
-        /* ── Results screen ─────────────────────────────────────────────────── */
+        /* ── Done — info card with play again ── */
         <div className="stroop-intro-card">
-          <div style={{ textAlign: 'center', padding: '8px 0 24px' }}>
-            <div style={{ fontSize: 48, marginBottom: 8 }}>⚡</div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: '#0d1b2a', marginBottom: 4 }}>
-              {avg ?? '—'}<span style={{ fontSize: 18, color: '#64748b', fontWeight: 500 }}>ms</span>
-            </div>
-            <div style={{ fontSize: 15, color: '#374151', marginBottom: 12 }}>Average Reaction Time</div>
-            {avg && <div style={{ fontSize: 20, fontWeight: 700, color: getRating(avg).color }}>{getRating(avg).label}</div>}
-            {avg && <div style={{ fontSize: 14, color: '#475569', marginTop: 4 }}>{getRating(avg).desc}</div>}
-          </div>
-          <div className="stroop-intro-rules" style={{ marginBottom: 24 }}>
-            {results.map((r, i) => (
-              <div key={i} className="stroop-rule">
-                <span className="stroop-rule-icon" style={{ fontSize: 14, fontWeight: 600, color: '#94a3b8' }}>R{i+1}</span>
-                <span style={{ color: getRating(r).color, fontWeight: 600 }}>{r}ms — {getRating(r).label}</span>
+          <div className="stroop-intro-demo">
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 80, height: 80, borderRadius: 16, background: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
               </div>
-            ))}
+              <div style={{ fontSize: 15, fontWeight: 600, color: '#16a34a' }}>TAP!</div>
+            </div>
+            <div className="stroop-demo-arrow">→</div>
+            <div className="stroop-demo-answer">
+              <span>As fast as</span>
+              <div className="stroop-demo-chip" style={{ background: '#eff6ff', color: '#2563eb', border: '2px solid #2563eb' }}>243ms</div>
+            </div>
           </div>
-          {saved && <div className="result-saved" style={{ marginBottom: 16 }}>Score saved to your profile!</div>}
+          <div className="stroop-intro-rules">
+            <div className="stroop-rule"><span className="stroop-rule-icon">👀</span><span>Watch the screen — it will turn <strong>green</strong></span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">⚡</span><span>Tap as <strong>fast as possible</strong> the moment it turns green</span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">⛔</span><span>Don't tap early — wait for green or it won't count!</span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">🔁</span><span>You get <strong>5 rounds</strong> — your average time is your score</span></div>
+          </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
             <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
