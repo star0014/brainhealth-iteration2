@@ -278,8 +278,6 @@ function MemoryGame({ onBack }) {
             ))}
           </div>
         </>
-      ) : (
-
       )}
 
       {/* Cross-game navigation shortcuts at the bottom */}
