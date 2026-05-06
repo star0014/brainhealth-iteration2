@@ -183,7 +183,7 @@ function ReactionGame({ onBack }) {
       </div>
 
       {/* ── Active game area ──────────────────────────────────────────────────── */}
-      {(showIntro || done) && (
+      {showIntro && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
