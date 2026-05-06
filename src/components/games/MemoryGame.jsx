@@ -80,6 +80,7 @@ function MemoryGame({ onBack }) {
   const [elapsed,   setElapsed]   = useState(0)              // seconds since start (for the timer display)
   const [locked,    setLocked]    = useState(false)          // blocks clicks while a non-match is animating
   const [saved,     setSaved]     = useState(false)          // true after score is successfully submitted
+  const [showIntro, setShowIntro] = useState(true)
 
   // Increment elapsed every second until the game is done.
   useEffect(() => {

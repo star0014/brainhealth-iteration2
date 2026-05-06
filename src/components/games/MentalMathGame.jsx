@@ -177,9 +177,12 @@ function MentalMathGame({ onBack }) {
       {phase === 'intro' && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
-            <div style={{ fontSize: 40, fontWeight: 800, color: '#16a34a', letterSpacing: -2 }}>14 + 27</div>
-            <div style={{ fontSize: 20, color: '#94a3b8', margin: '0 12px' }}>→</div>
-            <div style={{ background: '#f0fdf4', border: '2px solid #16a34a', borderRadius: 10, padding: '8px 18px', fontSize: 20, fontWeight: 700, color: '#16a34a' }}>41</div>
+            <div className="stroop-demo-word" style={{ color: '#16a34a', fontSize: 48 }}>14 + 27</div>
+            <div className="stroop-demo-arrow">→</div>
+            <div className="stroop-demo-answer">
+              <span>Answer</span>
+              <div className="stroop-demo-chip" style={{ background: '#f0fdf4', color: '#16a34a', border: '2px solid #16a34a' }}>41</div>
+            </div>
           </div>
           <div className="stroop-intro-rules">
             <div className="stroop-rule">
@@ -199,7 +202,7 @@ function MentalMathGame({ onBack }) {
               <span>You have <strong>60 seconds</strong> — go for a high score!</span>
             </div>
           </div>
-          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)' }} onClick={() => setPhase('playing')}>
+          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)', boxShadow: '0 8px 24px rgba(22,163,74,0.3)' }} onClick={() => setPhase('playing')}>
             Start Game →
           </button>
         </div>

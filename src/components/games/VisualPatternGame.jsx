@@ -165,14 +165,20 @@ function VisualPatternGame({ onBack }) {
       {phase === 'intro' && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, width: 120 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
               {Array.from({ length: 9 }).map((_, i) => (
                 <div key={i} style={{
-                  width: 36, height: 36, borderRadius: 8,
+                  width: 48, height: 48, borderRadius: 12,
                   background: [1, 4, 7].includes(i) ? '#0891b2' : '#e0f9ff',
-                  border: '2px solid #0891b240'
+                  border: `2px solid ${[1,4,7].includes(i) ? '#0891b2' : '#0891b240'}`,
+                  boxShadow: [1,4,7].includes(i) ? '0 4px 16px rgba(8,145,178,0.35)' : 'none'
                 }} />
               ))}
+            </div>
+            <div className="stroop-demo-arrow">→</div>
+            <div className="stroop-demo-answer">
+              <span>Repeat</span>
+              <div className="stroop-demo-chip" style={{ background: '#e0f9ff', color: '#0891b2', border: '2px solid #0891b2' }}>in order</div>
             </div>
           </div>
           <div className="stroop-intro-rules">
