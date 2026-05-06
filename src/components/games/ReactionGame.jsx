@@ -271,26 +271,28 @@ function ReactionGame({ onBack }) {
         </div>
       ) : (
         /* ── Results screen ─────────────────────────────────────────────────── */
-        <div className="reaction-results">
-          <h2>Your Results</h2>
-          <div className="result-avg">
-            <div className="result-avg-num">{avg ?? '—'}<span>ms</span></div>
-            <div className="result-avg-label">Average Reaction Time across {TOTAL_ROUNDS} rounds</div>
-            {avg && <div className="result-rating" style={{ color: getRating(avg).color }}>{getRating(avg).label}</div>}
-            {avg && <div className="result-desc">{getRating(avg).desc}</div>}
+        <div className="stroop-intro-card">
+          <div style={{ textAlign: 'center', padding: '8px 0 24px' }}>
+            <div style={{ fontSize: 48, marginBottom: 8 }}>⚡</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: '#0d1b2a', marginBottom: 4 }}>
+              {avg ?? '—'}<span style={{ fontSize: 18, color: '#64748b', fontWeight: 500 }}>ms</span>
+            </div>
+            <div style={{ fontSize: 15, color: '#374151', marginBottom: 12 }}>Average Reaction Time</div>
+            {avg && <div style={{ fontSize: 20, fontWeight: 700, color: getRating(avg).color }}>{getRating(avg).label}</div>}
+            {avg && <div style={{ fontSize: 14, color: '#475569', marginTop: 4 }}>{getRating(avg).desc}</div>}
           </div>
-          <div className="result-rounds">
+          <div className="stroop-intro-rules" style={{ marginBottom: 24 }}>
             {results.map((r, i) => (
-              <div key={i} className="result-round">
-                <span>Round {i + 1}</span>
+              <div key={i} className="stroop-rule">
+                <span className="stroop-rule-icon" style={{ fontSize: 14, fontWeight: 600, color: '#94a3b8' }}>R{i+1}</span>
                 <span style={{ color: getRating(r).color, fontWeight: 600 }}>{r}ms — {getRating(r).label}</span>
               </div>
             ))}
           </div>
-          {saved && <div className="result-saved">Score saved to your profile!</div>}
-          <div className="result-actions">
-            <button className="mg-play-btn" style={{ background: '#2563eb' }} onClick={reset}>Play Again</button>
-            <button className="game-back-btn" onClick={onBack}>Back to Games</button>
+          {saved && <div className="result-saved" style={{ marginBottom: 16 }}>Score saved to your profile!</div>}
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
+            <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
           </div>
         </div>
       )}
