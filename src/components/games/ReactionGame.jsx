@@ -9,25 +9,13 @@ const OtherGames = ({ onBack }) => (
   <div className="other-games">
     <div className="other-games-label">Try more games</div>
     <div className="other-games-row">
-      <button className="other-game-card" onClick={onBack}>
-        <div className="other-game-card-icon" style={{ background: '#7c3aed15', border: '1px solid #7c3aed30' }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-        </div>
-        <div className="other-game-card-info">
-          <div className="other-game-card-name">Memory Match</div>
-          <div className="other-game-card-skill" style={{ color: '#7c3aed' }}>Working Memory</div>
-        </div>
-        <div className="other-game-card-arrow">→</div>
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-name">Memory Match</span>
+        <span className="other-game-sub">Working Memory</span>
       </button>
-      <button className="other-game-card" onClick={onBack}>
-        <div className="other-game-card-icon" style={{ background: '#f59e0b15', border: '1px solid #f59e0b30' }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <div className="other-game-card-info">
-          <div className="other-game-card-name">Stroop Test</div>
-          <div className="other-game-card-skill" style={{ color: '#f59e0b' }}>Attention Control</div>
-        </div>
-        <div className="other-game-card-arrow">→</div>
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-name">Stroop Test</span>
+        <span className="other-game-sub">Attention Control</span>
       </button>
     </div>
   </div>
@@ -103,7 +91,6 @@ function ReactionGame({ onBack }) {
     setRound(0)
     setReactionTime(null)
     setSaved(false)
-    setShowIntro(true)
   }
 
   const avg = results.length > 0 ? Math.round(results.reduce((a, b) => a + b, 0) / results.length) : null
@@ -128,34 +115,7 @@ function ReactionGame({ onBack }) {
         <div className="game-rounds">{round} / {TOTAL_ROUNDS}</div>
       </div>
 
-      {showIntro && !done && (
-        <div className="stroop-intro-card">
-          <div className="stroop-intro-demo">
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 80, height: 80, borderRadius: 16, background: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              </div>
-              <div style={{ fontSize: 15, fontWeight: 600, color: '#16a34a' }}>TAP!</div>
-            </div>
-            <div className="stroop-demo-arrow">→</div>
-            <div className="stroop-demo-answer">
-              <span>As fast as</span>
-              <div className="stroop-demo-chip" style={{ background: '#eff6ff', color: '#2563eb', border: '2px solid #2563eb' }}>243ms</div>
-            </div>
-          </div>
-          <div className="stroop-intro-rules">
-            <div className="stroop-rule"><span className="stroop-rule-icon">👀</span><span>Watch the screen — it will turn <strong>green</strong></span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">⚡</span><span>Tap as <strong>fast as possible</strong> the moment it turns green</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">⛔</span><span>Don't tap early — wait for green or it won't count!</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">🔁</span><span>You get <strong>5 rounds</strong> — your average time is your score</span></div>
-          </div>
-          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)' }} onClick={() => setShowIntro(false)}>
-            Start Game →
-          </button>
-        </div>
-      )}
-
-      {!showIntro && !done ? (
+      {!done ? (
         <div className={`reaction-box ${state}`} onClick={handleClick}>
           {state === STATES.WAITING && (
             <div className="reaction-content">

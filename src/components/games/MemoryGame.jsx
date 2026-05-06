@@ -11,25 +11,13 @@ const OtherGames = ({ onBack }) => (
   <div className="other-games">
     <div className="other-games-label">Try more games</div>
     <div className="other-games-row">
-      <button className="other-game-card" onClick={onBack}>
-        <div className="other-game-card-icon" style={{ background: '#2563eb15', border: '1px solid #2563eb30' }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
-        <div className="other-game-card-info">
-          <div className="other-game-card-name">Reaction Test</div>
-          <div className="other-game-card-skill" style={{ color: '#2563eb' }}>Processing Speed</div>
-        </div>
-        <div className="other-game-card-arrow">→</div>
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-name">Reaction Test</span>
+        <span className="other-game-sub">Processing Speed</span>
       </button>
-      <button className="other-game-card" onClick={onBack}>
-        <div className="other-game-card-icon" style={{ background: '#f59e0b15', border: '1px solid #f59e0b30' }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <div className="other-game-card-info">
-          <div className="other-game-card-name">Stroop Test</div>
-          <div className="other-game-card-skill" style={{ color: '#f59e0b' }}>Attention Control</div>
-        </div>
-        <div className="other-game-card-arrow">→</div>
+      <button className="other-game-btn" onClick={onBack}>
+        <span className="other-game-name">Stroop Test</span>
+        <span className="other-game-sub">Attention Control</span>
       </button>
     </div>
   </div>
@@ -45,17 +33,16 @@ function MemoryGame({ onBack }) {
   const [selected, setSelected] = useState([])
   const [moves, setMoves] = useState(0)
   const [done, setDone] = useState(false)
-  const [startTime, setStartTime] = useState(Date.now())
-  const [showIntro,  setShowIntro]  = useState(true)
+  const [startTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
   const [locked, setLocked] = useState(false)
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    if (done || showIntro) return
+    if (done) return
     const interval = setInterval(() => setElapsed(Math.floor((Date.now() - startTime) / 1000)), 1000)
     return () => clearInterval(interval)
-  }, [done, showIntro])
+  }, [done])
 
   useEffect(() => {
     if (cards.every(c => c.matched) && cards.length > 0) {
@@ -123,7 +110,6 @@ function MemoryGame({ onBack }) {
     setElapsed(0)
     setLocked(false)
     setSaved(false)
-    setShowIntro(true)
   }
 
   const formatTime = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`
@@ -146,36 +132,7 @@ function MemoryGame({ onBack }) {
         <div className="game-rounds">{formatTime(elapsed)}</div>
       </div>
 
-      {showIntro && !done && (
-        <div className="stroop-intro-card">
-          <div className="stroop-intro-demo">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
-              {[0,1,2,3,4,5,6,7,8].map(i => (
-                <div key={i} style={{ width: 48, height: 48, borderRadius: 12, background: [1,5,7].includes(i) ? '#7c3aed' : '#f3e8ff', border: `2px solid ${[1,5,7].includes(i) ? '#7c3aed' : '#e9d5ff'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
-                  {i === 1 ? '🧠' : i === 5 ? '⭐' : i === 7 ? '🧠' : ''}
-                </div>
-              ))}
-            </div>
-            <div className="stroop-demo-arrow">→</div>
-            <div className="stroop-demo-answer">
-              <span>Find pairs</span>
-              <div className="stroop-demo-chip" style={{ background: '#f3e8ff', color: '#7c3aed', border: '2px solid #7c3aed' }}>Match!</div>
-            </div>
-          </div>
-          <div className="stroop-intro-rules">
-            <div className="stroop-rule"><span className="stroop-rule-icon">🔍</span><span>Flip two cards to reveal the icons underneath</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">🧠</span><span>Remember where each icon is — find <strong>matching pairs</strong></span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">🎯</span><span>Match all <strong>8 pairs</strong> in as few moves as possible</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">📊</span><span>Fewer moves = better score — challenge your memory!</span></div>
-          </div>
-          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)' }}
-            onClick={() => { setStartTime(Date.now()); setShowIntro(false) }}>
-            Start Game →
-          </button>
-        </div>
-      )}
-
-      {!showIntro && !done ? (
+      {!done ? (
         <>
           <div className="memory-stats">
             <span>Moves: <strong>{moves}</strong></span>
