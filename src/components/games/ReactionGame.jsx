@@ -68,12 +68,12 @@ const OtherGames = ({ onBack }) => (
 function ReactionGame({ onBack }) {
   const { getToken } = useAuth()
 
-  const [state,        setState]        = useState(STATES.WAITING)
-  const [showIntro,    setShowIntro]    = useState(true)  // current phase of the state machine
+  const [state,        setState]        = useState(STATES.WAITING)  // current phase of the state machine
   const [reactionTime, setReactionTime] = useState(null)            // most recent round's reaction time (ms)
   const [results,      setResults]      = useState([])              // array of reaction times for all rounds
   const [round,        setRound]        = useState(0)               // how many rounds have been completed
   const [saved,        setSaved]        = useState(false)           // true after score is saved to API
+  const [showIntro,    setShowIntro]    = useState(true)
 
   // Refs instead of state: these values are read inside async callbacks / setTimeout
   // and must not trigger re-renders.
@@ -155,6 +155,7 @@ function ReactionGame({ onBack }) {
     setRound(0)
     setReactionTime(null)
     setSaved(false)
+    setShowIntro(true)
   }
 
   // Derived values used in the results screen.
@@ -183,6 +184,8 @@ function ReactionGame({ onBack }) {
       </div>
 
       {/* ── Active game area ──────────────────────────────────────────────────── */}
+      {/* The reaction-box CSS class is extended with the state name to drive background colour:
+          .reaction-box.waiting → grey, .reaction-box.go → green, etc. */}
       {showIntro && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
@@ -201,39 +204,18 @@ function ReactionGame({ onBack }) {
             </div>
           </div>
           <div className="stroop-intro-rules">
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">👀</span>
-              <span>Watch the screen — it will turn <strong>green</strong></span>
-            </div>
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">⚡</span>
-              <span>Tap as <strong>fast as possible</strong> the moment it turns green</span>
-            </div>
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">⛔</span>
-              <span>Don't tap early — wait for green or it won't count!</span>
-            </div>
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">🔁</span>
-              <span>You get <strong>5 rounds</strong> — your average time is your score</span>
-            </div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">👀</span><span>Watch the screen — it will turn <strong>green</strong></span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">⚡</span><span>Tap as <strong>fast as possible</strong> the moment it turns green</span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">⛔</span><span>Don't tap early — wait for green or it won't count!</span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">🔁</span><span>You get <strong>5 rounds</strong> — your average time is your score</span></div>
           </div>
-          {done ? (
-            <div style={{ display: 'flex', gap: 12 }}>
-              <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
-              <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
-            </div>
-          ) : (
-            <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)' }}
-              onClick={() => setShowIntro(false)}>
-              Start Game →
-            </button>
-          )}
+          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)' }}
+            onClick={() => setShowIntro(false)}>
+            Start Game →
+          </button>
         </div>
       )}
 
-      {/* The reaction-box CSS class is extended with the state name to drive background colour:
-          .reaction-box.waiting → grey, .reaction-box.go → green, etc. */}
       {!showIntro && !done ? (
         <div className={`reaction-box ${state}`} onClick={handleClick}>
           {/* WAITING: invite the player to start */}
@@ -277,32 +259,30 @@ function ReactionGame({ onBack }) {
           )}
         </div>
       ) : (
-        /* ── Done — info card with play again ── */
-        <div className="stroop-intro-card">
-          <div className="stroop-intro-demo">
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 80, height: 80, borderRadius: 16, background: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                </svg>
+        /* ── Results screen ─────────────────────────────────────────────────── */
+        <div className="reaction-results">
+          <h2>Your Results</h2>
+          <div className="result-avg">
+            {/* Average reaction time — the primary score metric */}
+            <div className="result-avg-num">{avg}<span>ms</span></div>
+            <div className="result-avg-label">Average Reaction Time</div>
+            <div className="result-rating" style={{ color: getRating(avg).color }}>{getRating(avg).label}</div>
+            <div className="result-desc">{getRating(avg).desc}</div>
+          </div>
+          {/* Per-round breakdown table */}
+          <div className="result-rounds">
+            {results.map((r, i) => (
+              <div key={i} className="result-round">
+                <span>Round {i + 1}</span>
+                <span style={{ color: getRating(r).color }}>{r}ms — {getRating(r).label}</span>
               </div>
-              <div style={{ fontSize: 15, fontWeight: 600, color: '#16a34a' }}>TAP!</div>
-            </div>
-            <div className="stroop-demo-arrow">→</div>
-            <div className="stroop-demo-answer">
-              <span>As fast as</span>
-              <div className="stroop-demo-chip" style={{ background: '#eff6ff', color: '#2563eb', border: '2px solid #2563eb' }}>243ms</div>
-            </div>
+            ))}
           </div>
-          <div className="stroop-intro-rules">
-            <div className="stroop-rule"><span className="stroop-rule-icon">👀</span><span>Watch the screen — it will turn <strong>green</strong></span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">⚡</span><span>Tap as <strong>fast as possible</strong> the moment it turns green</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">⛔</span><span>Don't tap early — wait for green or it won't count!</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">🔁</span><span>You get <strong>5 rounds</strong> — your average time is your score</span></div>
-          </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
-            <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
+          {/* Confirmation shown only after the API call succeeds */}
+          {saved && <div className="result-saved">Score saved to your profile!</div>}
+          <div className="result-actions">
+            <button className="mg-play-btn" style={{ background: '#2563eb' }} onClick={reset}>Play Again</button>
+            <button className="game-back-btn" onClick={onBack}>Back to Games</button>
           </div>
         </div>
       )}

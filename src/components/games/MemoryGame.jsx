@@ -76,13 +76,13 @@ function MemoryGame({ onBack }) {
   const [selected,  setSelected]  = useState([])             // 0 or 1 cards currently flipped by the player
   const [moves,     setMoves]     = useState(0)              // total flip attempts (the score)
   const [done,      setDone]      = useState(false)          // true when all pairs are matched
-  const [startTime, setStartTime] = useState(Date.now())     // timestamp when game actually starts
+  const [startTime, setStartTime] = useState(Date.now())
+  const [showIntro,  setShowIntro]  = useState(true)
   const [elapsed,   setElapsed]   = useState(0)              // seconds since start (for the timer display)
   const [locked,    setLocked]    = useState(false)          // blocks clicks while a non-match is animating
   const [saved,     setSaved]     = useState(false)          // true after score is successfully submitted
-  const [showIntro, setShowIntro] = useState(true)
 
-  // Increment elapsed every second until the game is done — only after intro dismissed.
+  // Increment elapsed every second until the game is done.
   useEffect(() => {
     if (done || showIntro) return
     const interval = setInterval(() => setElapsed(Math.floor((Date.now() - startTime) / 1000)), 1000)
@@ -201,12 +201,7 @@ function MemoryGame({ onBack }) {
           <div className="stroop-intro-demo">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
               {[0,1,2,3,4,5,6,7,8].map(i => (
-                <div key={i} style={{
-                  width: 48, height: 48, borderRadius: 12,
-                  background: [1,5,7].includes(i) ? '#7c3aed' : '#f3e8ff',
-                  border: `2px solid ${[1,5,7].includes(i) ? '#7c3aed' : '#e9d5ff'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22
-                }}>
+                <div key={i} style={{ width: 48, height: 48, borderRadius: 12, background: [1,5,7].includes(i) ? '#7c3aed' : '#f3e8ff', border: `2px solid ${[1,5,7].includes(i) ? '#7c3aed' : '#e9d5ff'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
                   {i === 1 ? '🧠' : i === 5 ? '⭐' : i === 7 ? '🧠' : ''}
                 </div>
               ))}
@@ -218,40 +213,20 @@ function MemoryGame({ onBack }) {
             </div>
           </div>
           <div className="stroop-intro-rules">
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">🔍</span>
-              <span>Flip two cards to reveal the icons underneath</span>
-            </div>
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">🧠</span>
-              <span>Remember where each icon is — find <strong>matching pairs</strong></span>
-            </div>
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">🎯</span>
-              <span>Match all <strong>8 pairs</strong> in as few moves as possible</span>
-            </div>
-            <div className="stroop-rule">
-              <span className="stroop-rule-icon">📊</span>
-              <span>Fewer moves = better score — challenge your memory!</span>
-            </div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">🔍</span><span>Flip two cards to reveal the icons underneath</span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">🧠</span><span>Remember where each icon is — find <strong>matching pairs</strong></span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">🎯</span><span>Match all <strong>8 pairs</strong> in as few moves as possible</span></div>
+            <div className="stroop-rule"><span className="stroop-rule-icon">📊</span><span>Fewer moves = better score — challenge your memory!</span></div>
           </div>
-          {done ? (
-            <div style={{ display: 'flex', gap: 12 }}>
-              <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
-              <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
-            </div>
-          ) : (
-            <button className="stroop-start-btn"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)' }}
-              onClick={() => { setStartTime(Date.now()); setShowIntro(false) }}>
-              Start Game →
-            </button>
-          )}
+          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)' }}
+            onClick={() => { setStartTime(Date.now()); setShowIntro(false) }}>
+            Start Game →
+          </button>
         </div>
       )}
 
       {/* ── Playing state ── */}
-      {!showIntro && !done && (
+      {!showIntro && !done ? (
         <>
           {/* Move and match counters above the grid */}
           <div className="memory-stats">
@@ -278,6 +253,23 @@ function MemoryGame({ onBack }) {
             ))}
           </div>
         </>
+      ) : (
+        /* ── Results screen ─────────────────────────────────────────────────── */
+        <div className="reaction-results">
+          <h2>Well Done!</h2>
+          <div className="result-avg">
+            <div className="result-avg-num">{moves}<span>moves</span></div>
+            <div className="result-avg-label">Completed in {formatTime(elapsed)}</div>
+            <div className="result-rating" style={{ color: getRating().color }}>{getRating().label}</div>
+            <div className="result-desc">{getRating().desc}</div>
+          </div>
+          {/* Confirmation that the score was successfully saved to the user's profile */}
+          {saved && <div className="result-saved">Score saved to your profile!</div>}
+          <div className="result-actions">
+            <button className="mg-play-btn" style={{ background: '#7c3aed' }} onClick={reset}>Play Again</button>
+            <button className="game-back-btn" onClick={onBack}>Back to Games</button>
+          </div>
+        </div>
       )}
 
       {/* Cross-game navigation shortcuts at the bottom */}
