@@ -1,47 +1,17 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// ReactionGame component — measures processing speed via a visual reaction task.
-//
-// Rules:
-//   - 5 rounds total.
-//   - Each round: the screen is grey (WAITING/READY), then turns green (GO).
-//   - The player must tap as fast as possible when they see green.
-//   - Tapping before green (READY state) counts as a false start (TOOSOON).
-//   - Reaction time (ms) is recorded for each successful round.
-//   - Final score = average of all 5 reaction times.
-//
-// Scoring metric: average reaction time in milliseconds. Lower = better.
-// Score is saved to /api/games at the end of round 5.
-//
-// State machine:
-//   WAITING  → player taps to start → READY
-//   READY    → player taps too early → TOOSOON
-//   READY    → timer fires → GO
-//   GO       → player taps → RESULT
-//   RESULT   → player taps → READY (next round) or final results if round=5
-//   TOOSOON  → player taps → READY (retry)
-//
-// Props:
-//   onBack — callback to return to the MiniGames hub
-// ─────────────────────────────────────────────────────────────────────────────
 import { useState, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
-
-// State machine constants — named for readability and to prevent magic strings.
 const STATES = { WAITING: 'waiting', READY: 'ready', GO: 'go', RESULT: 'result', TOOSOON: 'toosoon' }
 
-// OtherGames: cross-game navigation shortcuts at the bottom of the game page.
 const OtherGames = ({ onBack }) => (
   <div className="other-games">
     <div className="other-games-label">Try more games</div>
     <div className="other-games-row">
       <button className="other-game-card" onClick={onBack}>
         <div className="other-game-card-icon" style={{ background: '#7c3aed15', border: '1px solid #7c3aed30' }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-          </svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         </div>
         <div className="other-game-card-info">
           <div className="other-game-card-name">Memory Match</div>
@@ -51,9 +21,7 @@ const OtherGames = ({ onBack }) => (
       </button>
       <button className="other-game-card" onClick={onBack}>
         <div className="other-game-card-icon" style={{ background: '#f59e0b15', border: '1px solid #f59e0b30' }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <div className="other-game-card-info">
           <div className="other-game-card-name">Stroop Test</div>
@@ -67,44 +35,35 @@ const OtherGames = ({ onBack }) => (
 
 function ReactionGame({ onBack }) {
   const { getToken } = useAuth()
-
-  const [state,        setState]        = useState(STATES.WAITING)  // current phase of the state machine
-  const [reactionTime, setReactionTime] = useState(null)            // most recent round's reaction time (ms)
-  const [results,      setResults]      = useState([])              // array of reaction times for all rounds
-  const [round,        setRound]        = useState(0)               // how many rounds have been completed
-  const [saved,        setSaved]        = useState(false)           // true after score is saved to API
-  const [showIntro,    setShowIntro]    = useState(true)
-
-  // Refs instead of state: these values are read inside async callbacks / setTimeout
-  // and must not trigger re-renders.
-  const startTime = useRef(null)   // Date.now() timestamp when the screen turned green
-  const timer     = useRef(null)   // setTimeout ID for the random GO delay
-
+  const [state, setState] = useState(STATES.WAITING)
+  const [reactionTime, setReactionTime] = useState(null)
+  const [results, setResults] = useState([])
+  const [round, setRound] = useState(0)
+  const [saved, setSaved] = useState(false)
+  const startTime = useRef(null)
+  const timer = useRef(null)
   const TOTAL_ROUNDS = 5
 
-  // startRound: transitions to READY state and sets a random 2-5 second delay before GO.
-  // The random delay prevents players from anticipating the exact trigger moment.
   function startRound() {
     setState(STATES.READY)
-    const delay = 2000 + Math.random() * 3000  // 2 000 – 5 000 ms
+    const delay = 2000 + Math.random() * 3000
     timer.current = setTimeout(() => {
       setState(STATES.GO)
-      startTime.current = Date.now()  // record the moment the screen turned green
+      startTime.current = Date.now()
     }, delay)
   }
 
-  // Saves the average reaction time (and all individual round times) to the API.
   async function saveScore(avgMs, allResults) {
     try {
       const token = await getToken()
-      if (!token) return  // guest users — no Clerk token, skip saving
+      if (!token) return
       await fetch(`${API}/games`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           game_id: 'reaction',
-          score: avgMs,           // primary metric stored in the score column
-          metadata: { rounds: allResults }  // per-round breakdown stored in metadata
+          score: avgMs,
+          metadata: { rounds: allResults }
         })
       })
       setSaved(true)
@@ -113,19 +72,13 @@ function ReactionGame({ onBack }) {
     }
   }
 
-  // handleClick: the main interaction handler — behaviour changes based on current state.
   function handleClick() {
     if (state === STATES.WAITING) {
-      // Player taps to begin — start the first/next round.
       startRound()
-
     } else if (state === STATES.READY) {
-      // Player tapped before the screen turned green — false start.
-      clearTimeout(timer.current)  // cancel the pending GO transition
+      clearTimeout(timer.current)
       setState(STATES.TOOSOON)
-
     } else if (state === STATES.GO) {
-      // Successful reaction: record the time elapsed since the screen turned green.
       const rt = Date.now() - startTime.current
       setReactionTime(rt)
       const newResults = [...results, rt]
@@ -133,21 +86,16 @@ function ReactionGame({ onBack }) {
       const newRound = round + 1
       setRound(newRound)
       setState(STATES.RESULT)
-
-      // After the last round, calculate the average and save to the API.
       if (newRound >= TOTAL_ROUNDS) {
         const avg = Math.round(newResults.reduce((a, b) => a + b, 0) / newResults.length)
         saveScore(avg, newResults)
       }
-
     } else if (state === STATES.RESULT || state === STATES.TOOSOON) {
-      // Between rounds: player taps to continue to the next round.
-      if (round >= TOTAL_ROUNDS) return  // all rounds done — ignore taps
+      if (round >= TOTAL_ROUNDS) return
       startRound()
     }
   }
 
-  // reset: reinitialises all state for "Play Again".
   function reset() {
     clearTimeout(timer.current)
     setState(STATES.WAITING)
@@ -158,11 +106,9 @@ function ReactionGame({ onBack }) {
     setShowIntro(true)
   }
 
-  // Derived values used in the results screen.
-  const avg  = results.length > 0 ? Math.round(results.reduce((a, b) => a + b, 0) / results.length) : null
-  const done = round >= TOTAL_ROUNDS  // true when all 5 rounds are complete
+  const avg = results.length > 0 ? Math.round(results.reduce((a, b) => a + b, 0) / results.length) : null
+  const done = round >= TOTAL_ROUNDS
 
-  // Returns rating metadata for a given reaction time in milliseconds.
   function getRating(ms) {
     if (ms < 200) return { label: 'Exceptional!', desc: 'Your processing speed is in the top tier.', color: '#16a34a' }
     if (ms < 250) return { label: 'Great!', desc: 'Your reaction time is well above average.', color: '#2563eb' }
@@ -173,7 +119,6 @@ function ReactionGame({ onBack }) {
 
   return (
     <div className="game-page">
-      {/* Header: back button, title, round counter */}
       <div className="game-header">
         <button className="game-back" onClick={onBack}>← Back</button>
         <div className="game-title-area">
@@ -183,17 +128,12 @@ function ReactionGame({ onBack }) {
         <div className="game-rounds">{round} / {TOTAL_ROUNDS}</div>
       </div>
 
-      {/* ── Active game area ──────────────────────────────────────────────────── */}
-      {/* The reaction-box CSS class is extended with the state name to drive background colour:
-          .reaction-box.waiting → grey, .reaction-box.go → green, etc. */}
       {showIntro && !done && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 80, height: 80, borderRadius: 16, background: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                </svg>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               </div>
               <div style={{ fontSize: 15, fontWeight: 600, color: '#16a34a' }}>TAP!</div>
             </div>
@@ -209,8 +149,7 @@ function ReactionGame({ onBack }) {
             <div className="stroop-rule"><span className="stroop-rule-icon">⛔</span><span>Don't tap early — wait for green or it won't count!</span></div>
             <div className="stroop-rule"><span className="stroop-rule-icon">🔁</span><span>You get <strong>5 rounds</strong> — your average time is your score</span></div>
           </div>
-          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)' }}
-            onClick={() => setShowIntro(false)}>
+          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)' }} onClick={() => setShowIntro(false)}>
             Start Game →
           </button>
         </div>
@@ -218,7 +157,6 @@ function ReactionGame({ onBack }) {
 
       {!showIntro && !done ? (
         <div className={`reaction-box ${state}`} onClick={handleClick}>
-          {/* WAITING: invite the player to start */}
           {state === STATES.WAITING && (
             <div className="reaction-content">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -228,7 +166,6 @@ function ReactionGame({ onBack }) {
               <span>React as fast as you can when the screen turns green</span>
             </div>
           )}
-          {/* READY: three animated dots — player must hold off tapping */}
           {state === STATES.READY && (
             <div className="reaction-content">
               <div className="reaction-dots"><span/><span/><span/></div>
@@ -236,13 +173,11 @@ function ReactionGame({ onBack }) {
               <span>Don't tap yet!</span>
             </div>
           )}
-          {/* GO: large "TAP!" prompt — player should react immediately */}
           {state === STATES.GO && (
             <div className="reaction-content">
               <p className="reaction-go">TAP!</p>
             </div>
           )}
-          {/* RESULT: shows this round's reaction time and rating */}
           {state === STATES.RESULT && (
             <div className="reaction-content">
               <div className="reaction-time">{reactionTime}<span>ms</span></div>
@@ -250,7 +185,6 @@ function ReactionGame({ onBack }) {
               <span>Tap to continue</span>
             </div>
           )}
-          {/* TOOSOON: player tapped before the screen turned green */}
           {state === STATES.TOOSOON && (
             <div className="reaction-content">
               <p>Too soon!</p>
@@ -259,17 +193,14 @@ function ReactionGame({ onBack }) {
           )}
         </div>
       ) : (
-        /* ── Results screen ─────────────────────────────────────────────────── */
         <div className="reaction-results">
           <h2>Your Results</h2>
           <div className="result-avg">
-            {/* Average reaction time — the primary score metric */}
             <div className="result-avg-num">{avg}<span>ms</span></div>
             <div className="result-avg-label">Average Reaction Time</div>
             <div className="result-rating" style={{ color: getRating(avg).color }}>{getRating(avg).label}</div>
             <div className="result-desc">{getRating(avg).desc}</div>
           </div>
-          {/* Per-round breakdown table */}
           <div className="result-rounds">
             {results.map((r, i) => (
               <div key={i} className="result-round">
@@ -278,7 +209,6 @@ function ReactionGame({ onBack }) {
               </div>
             ))}
           </div>
-          {/* Confirmation shown only after the API call succeeds */}
           {saved && <div className="result-saved">Score saved to your profile!</div>}
           <div className="result-actions">
             <button className="mg-play-btn" style={{ background: '#2563eb' }} onClick={reset}>Play Again</button>
@@ -286,8 +216,6 @@ function ReactionGame({ onBack }) {
           </div>
         </div>
       )}
-
-      {/* Cross-game navigation shortcuts */}
       <OtherGames onBack={onBack} />
     </div>
   )
