@@ -196,7 +196,7 @@ function MemoryGame({ onBack }) {
       </div>
 
       {/* ── Intro card ── */}
-      {showIntro && !done && (
+      {(showIntro || done) && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
@@ -235,11 +235,18 @@ function MemoryGame({ onBack }) {
               <span>Fewer moves = better score — challenge your memory!</span>
             </div>
           </div>
-          <button className="stroop-start-btn"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)' }}
-            onClick={() => { setStartTime(Date.now()); setShowIntro(false) }}>
-            Start Game →
-          </button>
+          {done ? (
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
+              <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
+            </div>
+          ) : (
+            <button className="stroop-start-btn"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)' }}
+              onClick={() => { setStartTime(Date.now()); setShowIntro(false) }}>
+              Start Game →
+            </button>
+          )}
         </div>
       )}
 
@@ -272,33 +279,7 @@ function MemoryGame({ onBack }) {
           </div>
         </>
       ) : (
-        /* ── Done — show intro again with play again option ── */
-        <div className="stroop-intro-card">
-          <div className="stroop-intro-demo">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
-              {[0,1,2,3,4,5,6,7,8].map(i => (
-                <div key={i} style={{ width: 48, height: 48, borderRadius: 12, background: [1,5,7].includes(i) ? '#7c3aed' : '#f3e8ff', border: `2px solid ${[1,5,7].includes(i) ? '#7c3aed' : '#e9d5ff'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
-                  {i === 1 ? '🧠' : i === 5 ? '⭐' : i === 7 ? '🧠' : ''}
-                </div>
-              ))}
-            </div>
-            <div className="stroop-demo-arrow">→</div>
-            <div className="stroop-demo-answer">
-              <span>Find pairs</span>
-              <div className="stroop-demo-chip" style={{ background: '#f3e8ff', color: '#7c3aed', border: '2px solid #7c3aed' }}>Match!</div>
-            </div>
-          </div>
-          <div className="stroop-intro-rules">
-            <div className="stroop-rule"><span className="stroop-rule-icon">🔍</span><span>Flip two cards to reveal the icons underneath</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">🧠</span><span>Remember where each icon is — find <strong>matching pairs</strong></span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">🎯</span><span>Match all <strong>8 pairs</strong> in as few moves as possible</span></div>
-            <div className="stroop-rule"><span className="stroop-rule-icon">📊</span><span>Fewer moves = better score — challenge your memory!</span></div>
-          </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 8px 24px rgba(124,58,237,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
-            <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
-          </div>
-        </div>
+
       )}
 
       {/* Cross-game navigation shortcuts at the bottom */}

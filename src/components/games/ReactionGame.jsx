@@ -183,7 +183,7 @@ function ReactionGame({ onBack }) {
       </div>
 
       {/* ── Active game area ──────────────────────────────────────────────────── */}
-      {showIntro && !done && (
+      {(showIntro || done) && (
         <div className="stroop-intro-card">
           <div className="stroop-intro-demo">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
@@ -218,10 +218,17 @@ function ReactionGame({ onBack }) {
               <span>You get <strong>5 rounds</strong> — your average time is your score</span>
             </div>
           </div>
-          <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)' }}
-            onClick={() => setShowIntro(false)}>
-            Start Game →
-          </button>
+          {done ? (
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)', flex: 1 }} onClick={reset}>Play Again</button>
+              <button className="game-back-btn" style={{ flex: 1 }} onClick={onBack}>Back to Games</button>
+            </div>
+          ) : (
+            <button className="stroop-start-btn" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 8px 24px rgba(37,99,235,0.3)' }}
+              onClick={() => setShowIntro(false)}>
+              Start Game →
+            </button>
+          )}
         </div>
       )}
 
