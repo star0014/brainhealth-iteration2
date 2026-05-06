@@ -2,6 +2,8 @@ import { useState } from 'react'
 import ReactionGame from '../components/games/ReactionGame'
 import MemoryGame from '../components/games/MemoryGame'
 import StroopGame from '../components/games/StroopGame'
+import VisualPatternGame from '../components/games/VisualPatternGame'
+import MentalMathGame from '../components/games/MentalMathGame'
 import './MiniGames.css'
 
 function MiniGames() {
@@ -49,12 +51,41 @@ function MiniGames() {
           <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
       )
+    },
+    {
+      id: 'visual_pattern',
+      title: 'Visual Pattern',
+      skill: 'Working Memory',
+      desc: 'Watch a sequence of cells light up on a grid, then repeat the pattern from memory. Gets harder each round!',
+      duration: '~2 min',
+      color: '#0891b2',
+      icon: (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0891b2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+      )
+    },
+    {
+      id: 'mental_math',
+      title: 'Mental Math',
+      skill: 'Executive Function',
+      desc: 'Solve rapid-fire arithmetic problems against the clock. Questions get harder as your streak grows!',
+      duration: '~1 min',
+      color: '#16a34a',
+      icon: (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      )
     }
   ]
 
   if (activeGame === 'reaction') return <ReactionGame onBack={() => setActiveGame(null)} />
   if (activeGame === 'memory') return <MemoryGame onBack={() => setActiveGame(null)} />
   if (activeGame === 'stroop') return <StroopGame onBack={() => setActiveGame(null)} />
+  if (activeGame === 'visual_pattern') return <VisualPatternGame onBack={() => setActiveGame(null)} />
+  if (activeGame === 'mental_math') return <MentalMathGame onBack={() => setActiveGame(null)} />
 
   return (
     <div className="mg-page">
