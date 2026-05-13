@@ -97,19 +97,3 @@ router.get('/leaderboard/:gameId', async (req, res) => {
 })
 
 export default router
-
-// ── DELETE /api/games/cleanup-anonymous ──────────────────────────────────────
-// One-time endpoint to remove all scores with NULL display_name (old anonymous scores).
-// Hit this once via browser then remove this route from the code.
-// No auth required since it only deletes anonymous rows (no user data at risk).
-router.delete('/cleanup-anonymous', async (req, res) => {
-  try {
-    const result = await pool.query(
-      `DELETE FROM game_scores WHERE display_name IS NULL OR display_name = 'Anonymous' RETURNING id`
-    )
-    res.json({ deleted: result.rows.length, message: 'Anonymous scores cleared' })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Server error' })
-  }
-})
