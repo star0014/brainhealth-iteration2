@@ -13,7 +13,7 @@
 import express from 'express'
 import pool from '../db.js'
 import { requireAuth } from '../middleware/auth.js'
-import { requireWearableToken } from './tokens.js'
+import { requireWearableToken } from '../middleware/wearableAuth.js'
 
 const router = express.Router()
 
