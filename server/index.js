@@ -1,77 +1,34 @@
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import dotenv from 'dotenv'
-
-import habitsRoutes from './routes/habits.js'
-import gamesRoutes from './routes/games.js'
-import tokensRoutes from './routes/tokens.js'
-
-dotenv.config()
+import habitRoutes from './routes/habits.js'
+import gameRoutes from './routes/games.js'
+//import tokenRoutes from './routes/tokens.js'
 
 const app = express()
 
-// ─────────────────────────────────────────────
-// CORS FIX
-// ─────────────────────────────────────────────
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://iteration2.ta31brainboost.me',
+  'https://iteration3.ta31brainboost.me',
+  process.env.FRONTEND_URL,
+].filter(Boolean)
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://iteration2.ta31brainboost.me',
-    'https://iteration3.ta31brainboost.me',
-    'https://ta31brainboost.me'
-  ],
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) return callback(null, true)
+    callback(new Error(`CORS: origin ${origin} not allowed`))
+  }
 }))
 
-// Handle preflight requests
-app.options('/*', cors())
-
-// ─────────────────────────────────────────────
-// Middleware
-// ─────────────────────────────────────────────
 app.use(express.json())
 
-// ─────────────────────────────────────────────
-// Health check route
-// ─────────────────────────────────────────────
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    message: 'BrainBoost API running'
-  })
-})
+app.use('/api/habits', habitRoutes)
+app.use('/api/games', gameRoutes)
+//app.use('/api/tokens', tokenRoutes)
 
-// ─────────────────────────────────────────────
-// Routes
-// ─────────────────────────────────────────────
-app.use('/api/habits', habitsRoutes)
-app.use('/api/games', gamesRoutes)
-app.use('/api/tokens', tokensRoutes)
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
 
-// ─────────────────────────────────────────────
-// Root route
-// ─────────────────────────────────────────────
-app.get('/', (req, res) => {
-  res.send('BrainBoost backend is running')
-})
-
-// ─────────────────────────────────────────────
-// Error handler
-// ─────────────────────────────────────────────
-app.use((err, req, res, next) => {
-  console.error(err)
-
-  res.status(500).json({
-    error: 'Server error',
-    message: err.message
-  })
-})
-
-// ─────────────────────────────────────────────
-// Railway PORT FIX
-// ─────────────────────────────────────────────
 const PORT = process.env.PORT || 3001
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))
