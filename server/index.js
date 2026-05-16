@@ -13,6 +13,7 @@ import express from 'express'
 import cors from 'cors'
 import habitRoutes from './routes/habits.js'
 import gameRoutes from './routes/games.js'
+import tokenRoutes from './routes/tokens.js'
 
 const app = express()
 
@@ -23,9 +24,7 @@ const app = express()
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://iteration2.ta31brainboost.me',
-    'https://iteration3.ta31brainboost.me',
-    'https://ta31brainboost.me'
+    'https://iteration2.ta31brainboost.me'
   ]
 }))
 
@@ -41,11 +40,14 @@ app.use('/api/habits', habitRoutes)
 // Handles: POST / (save score), GET / (list recent scores).
 app.use('/api/games', gameRoutes)
 
+// Personal API tokens for Apple Watch Shortcut integration.
+app.use('/api/tokens', tokenRoutes)
+
 // Health-check endpoint — returns a simple JSON payload so the hosting platform
 // (Railway) and load balancers can confirm the process is alive and responding.
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
 
 // Start listening on port 3001.
 // The frontend points VITE_API_URL at http://localhost:3001/api during development.
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))
