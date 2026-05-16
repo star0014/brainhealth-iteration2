@@ -28,7 +28,8 @@ async function ensureTable() {
     )
   `)
 }
-ensureTable().catch(console.error)
+// Run table creation after a short delay to ensure DB pool is ready
+setTimeout(() => ensureTable().catch(console.error), 2000)
 
 // ── GET /api/tokens ───────────────────────────────────────────────────────────
 // Returns the current user's token, creating one if it doesn't exist yet.
